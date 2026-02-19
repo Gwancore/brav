@@ -298,181 +298,198 @@ loveBtn.addEventListener('click', (e) => {
 });
 
 // ===========================
-// YOUTUBE-BASED DANCEHALL PLAYER (YouTube IFrame API)
-// - Uses the IFrame API for reliable control (play/pause/next/prev)
-// - Includes multiple artists; you can add/remove video IDs in `playlist`
+// DANCEHALL MUSIC PLAYER 🎶
+// Uses YouTube IFrame API with a visible (but hidden behind UI) player
+// so browsers don't block playback. Includes volume + shuffle.
 // ===========================
 const musicToggle = document.getElementById('musicToggle');
 let isPlaying = false;
 let ytPlayer = null;
 let ytReady = false;
 let currentTrack = 0;
+let shuffleOn = false;
+let currentVolume = 50;
 
-// curated dancehall playlist (video IDs). Add more IDs as you like.
 const playlist = [
-        // Vybz Kartel
-        { id: 'pLgQMfaFMoA', title: 'Vybz Kartel - Sometimes Love Dies' },
-        { id: 'CflpGXx5MsU', title: 'Vybz Kartel - Colouring This Life' },
-        // Dancehall / related artists
-        { id: 'dQw4w9WgXcQ', title: 'Sean Paul - placeholder (replace with favorite)' },
-        { id: '3JZ_D3ELwOQ', title: 'Shaggy - placeholder (replace with favorite)' },
-        { id: 'V6vGNPCkMnE', title: 'Vybz Kartel - I Promise You' }
+    // Vybz Kartel
+    { id: 'pLgQMfaFMoA', title: 'Vybz Kartel – Sometimes Love Dies' },
+    { id: 'CflpGXx5MsU', title: 'Vybz Kartel – Colouring This Life' },
+    { id: 'V6vGNPCkMnE', title: 'Vybz Kartel – I Promise You' },
+    { id: '7v6RbGGF11M', title: 'Vybz Kartel – My Heaven My Hell' },
+    { id: 'cVHdCmVNJQk', title: 'Vybz Kartel – Yuh Love' },
+    // Sean Paul
+    { id: 'k5mwREcOxgY', title: 'Sean Paul – No Lie' },
+    { id: 'dW2MmuFGHQI', title: 'Sean Paul – Get Busy' },
+    // Shaggy
+    { id: 'phaJXp_zMYQk', title: 'Shaggy – Angel' },
+    // Popcaan
+    { id: 'X2G1fBMt2EE', title: 'Popcaan – Forever' },
+    // Alkaline
+    { id: 'sS8VjPIbfDo', title: 'Alkaline – Ocean Wave' },
+    // Mavado
+    { id: 'T_HoNHqEe5I', title: 'Mavado – Come Into My Room' },
+    // Busy Signal
+    { id: 'jgGqVMrpL2s', title: 'Busy Signal – One More Night' },
 ];
 
-// Now playing UI
+// Build now-playing UI with volume slider + shuffle
 const nowPlaying = document.createElement('div');
 nowPlaying.id = 'nowPlaying';
 nowPlaying.className = 'now-playing';
 nowPlaying.innerHTML = `
-    <div class="now-playing-inner">
-        <span class="np-icon">🎶</span>
-        <span class="np-text">Click 🎵 to play</span>
-        <div class="np-controls">
-            <button class="np-btn" id="prevTrack">⏮</button>
-            <button class="np-btn" id="nextTrack">⏭</button>
-        </div>
+  <div class="now-playing-inner">
+    <span class="np-icon">🎶</span>
+    <span class="np-text">Click 🎵 to play</span>
+  </div>
+  <div class="np-row">
+    <div class="np-controls">
+      <button class="np-btn" id="prevTrack" title="Previous">⏮</button>
+      <button class="np-btn" id="nextTrack" title="Next">⏭</button>
+      <button class="np-btn" id="shuffleBtn" title="Shuffle">🔀</button>
     </div>
+    <div class="np-volume">
+      <span class="vol-icon">🔊</span>
+      <input type="range" id="volumeSlider" min="0" max="100" value="50" class="volume-slider" title="Volume">
+    </div>
+  </div>
 `;
 document.body.appendChild(nowPlaying);
 
-// load YouTube IFrame API if not present
+// Hidden but VISIBLE player container (1x1, opacity 0.01 — not display:none)
+// This is the key fix: browsers need a "visible" element for autoplay
+const playerWrapper = document.createElement('div');
+playerWrapper.id = 'ytPlayerWrapper';
+playerWrapper.style.cssText = 'position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
+const playerDiv = document.createElement('div');
+playerDiv.id = 'ytPlayerContainer';
+playerWrapper.appendChild(playerDiv);
+document.body.appendChild(playerWrapper);
+
+// Load YouTube IFrame API
 function loadYouTubeAPI() {
     return new Promise((resolve) => {
         if (window.YT && window.YT.Player) return resolve();
         const tag = document.createElement('script');
         tag.src = 'https://www.youtube.com/iframe_api';
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        window.onYouTubeIframeAPIReady = () => {
-            resolve();
-        };
+        document.head.appendChild(tag);
+        window.onYouTubeIframeAPIReady = resolve;
     });
 }
 
-function createYTPlayer(videoId) {
-    // ensure a container exists
-    let container = document.getElementById('ytPlayerContainer');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'ytPlayerContainer';
-        container.style.width = '0';
-        container.style.height = '0';
-        container.style.overflow = 'hidden';
-        container.style.position = 'absolute';
-        container.style.left = '-9999px';
-        document.body.appendChild(container);
+// Create or reuse the YT player
+function initPlayer(videoId) {
+    if (ytPlayer && ytReady) {
+        ytPlayer.loadVideoById(videoId);
+        return;
     }
-
-    if (ytPlayer) {
-        // just load the new video
-        try {
-            ytPlayer.loadVideoById(videoId);
-        } catch (e) {
-            // recreate if needed
-            ytPlayer.destroy();
-            ytPlayer = null;
-        }
-    }
-
-    if (!ytPlayer) {
-        ytPlayer = new YT.Player('ytPlayerContainer', {
-            height: '0',
-            width: '0',
-            videoId: videoId,
-            playerVars: {
-                autoplay: 0,
-                controls: 0,
-                rel: 0,
-                modestbranding: 1
+    ytPlayer = new YT.Player('ytPlayerContainer', {
+        width: '1',
+        height: '1',
+        videoId: videoId,
+        playerVars: {
+            autoplay: 1,
+            controls: 0,
+            rel: 0,
+            modestbranding: 1,
+            playsinline: 1,
+            origin: window.location.origin
+        },
+        events: {
+            onReady: (e) => {
+                ytReady = true;
+                e.target.setVolume(currentVolume);
+                e.target.playVideo();
+                updateNowPlaying();
             },
-            events: {
-                onReady: (e) => {
-                    ytReady = true;
-                    updateNowPlaying();
-                    // play immediately if requested
-                    if (isPlaying) e.target.playVideo();
-                },
-                onStateChange: (e) => {
-                    // if video ended, go to next track
-                    if (e.data === YT.PlayerState.ENDED) {
-                        nextTrack();
-                    }
-                },
-                onError: (e) => {
-                    // show fallback: open on YouTube
-                    const text = nowPlaying.querySelector('.np-text');
-                    text.textContent = 'Playback blocked — open on YouTube';
-                    text.style.cursor = 'pointer';
-                    text.onclick = () => window.open(`https://www.youtube.com/watch?v=${playlist[currentTrack].id}`, '_blank');
+            onStateChange: (e) => {
+                if (e.data === YT.PlayerState.ENDED) {
+                    advanceTrack();
                 }
+                // If unstarted or cued, try playing
+                if (e.data === YT.PlayerState.CUED) {
+                    e.target.playVideo();
+                }
+            },
+            onError: () => {
+                // Skip to next track on error
+                advanceTrack();
             }
-        });
-    }
+        }
+    });
 }
 
 function updateNowPlaying() {
     const text = nowPlaying.querySelector('.np-text');
     text.textContent = playlist[currentTrack].title;
     nowPlaying.classList.add('visible');
+    // Update shuffle button state
+    const sBtn = document.getElementById('shuffleBtn');
+    sBtn.classList.toggle('active', shuffleOn);
 }
 
-function playCurrent() {
-    if (!ytReady) return;
-    if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
-}
-
-function pauseCurrent() {
-    if (!ytReady) return;
-    if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
-}
-
-function nextTrack() {
-    currentTrack = (currentTrack + 1) % playlist.length;
-    updateNowPlaying();
-    if (ytReady) {
-        ytPlayer.loadVideoById(playlist[currentTrack].id);
+function advanceTrack() {
+    if (shuffleOn) {
+        let next;
+        do { next = Math.floor(Math.random() * playlist.length); } while (next === currentTrack && playlist.length > 1);
+        currentTrack = next;
+    } else {
+        currentTrack = (currentTrack + 1) % playlist.length;
     }
-}
-
-function prevTrack() {
-    currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
     updateNowPlaying();
-    if (ytReady) {
-        ytPlayer.loadVideoById(playlist[currentTrack].id);
-    }
+    if (ytReady && ytPlayer) ytPlayer.loadVideoById(playlist[currentTrack].id);
 }
 
+function goToPrev() {
+    if (shuffleOn) {
+        let next;
+        do { next = Math.floor(Math.random() * playlist.length); } while (next === currentTrack && playlist.length > 1);
+        currentTrack = next;
+    } else {
+        currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+    }
+    updateNowPlaying();
+    if (ytReady && ytPlayer) ytPlayer.loadVideoById(playlist[currentTrack].id);
+}
+
+// Main toggle
 musicToggle.addEventListener('click', async () => {
-    // user gesture: initialize API/player
     if (!ytReady) {
         await loadYouTubeAPI();
-        createYTPlayer(playlist[currentTrack].id);
+        isPlaying = true;
+        initPlayer(playlist[currentTrack].id);
+        musicToggle.classList.add('playing');
+        musicToggle.textContent = '🎶';
+        updateNowPlaying();
+        return;
     }
 
     if (isPlaying) {
-        pauseCurrent();
+        ytPlayer.pauseVideo();
         musicToggle.classList.remove('playing');
         musicToggle.textContent = '🎵';
     } else {
-        // ensure player exists and play
-        if (!ytPlayer) createYTPlayer(playlist[currentTrack].id);
-        playCurrent();
+        ytPlayer.playVideo();
         musicToggle.classList.add('playing');
         musicToggle.textContent = '🎶';
     }
     isPlaying = !isPlaying;
 });
 
-document.getElementById('prevTrack').addEventListener('click', (e) => {
+// Controls
+document.getElementById('prevTrack').addEventListener('click', (e) => { e.stopPropagation(); goToPrev(); });
+document.getElementById('nextTrack').addEventListener('click', (e) => { e.stopPropagation(); advanceTrack(); });
+document.getElementById('shuffleBtn').addEventListener('click', (e) => {
     e.stopPropagation();
-    prevTrack();
-    if (isPlaying && ytReady) playCurrent();
+    shuffleOn = !shuffleOn;
+    document.getElementById('shuffleBtn').classList.toggle('active', shuffleOn);
 });
-document.getElementById('nextTrack').addEventListener('click', (e) => {
-    e.stopPropagation();
-    nextTrack();
-    if (isPlaying && ytReady) playCurrent();
+
+// Volume slider
+document.getElementById('volumeSlider').addEventListener('input', (e) => {
+    currentVolume = parseInt(e.target.value);
+    if (ytReady && ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(currentVolume);
+    const icon = nowPlaying.querySelector('.vol-icon');
+    icon.textContent = currentVolume === 0 ? '🔇' : currentVolume < 40 ? '🔉' : '🔊';
 });
 
 // ===========================

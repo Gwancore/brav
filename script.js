@@ -299,16 +299,11 @@ loveBtn.addEventListener('click', (e) => {
 
 // ===========================
 // DANCEHALL MUSIC PLAYER 🎶
-// Uses YouTube IFrame API with a visible (but hidden behind UI) player
-// so browsers don't block playback. Includes volume + shuffle.
+// Simple & reliable: visible YouTube embed + clickable playlist
+// No IFrame API, no autoplay hacks — just works.
 // ===========================
-const musicToggle = document.getElementById('musicToggle');
-let isPlaying = false;
-let ytPlayer = null;
-let ytReady = false;
 let currentTrack = 0;
 let shuffleOn = false;
-let currentVolume = 50;
 
 const playlist = [
     // Vybz Kartel
@@ -321,7 +316,7 @@ const playlist = [
     { id: 'k5mwREcOxgY', title: 'Sean Paul – No Lie' },
     { id: 'dW2MmuFGHQI', title: 'Sean Paul – Get Busy' },
     // Shaggy
-    { id: 'phaJXp_zMYQk', title: 'Shaggy – Angel' },
+    { id: 'CBMiJJB-hvY', title: 'Shaggy – Angel' },
     // Popcaan
     { id: 'X2G1fBMt2EE', title: 'Popcaan – Forever' },
     // Alkaline
@@ -332,165 +327,68 @@ const playlist = [
     { id: 'jgGqVMrpL2s', title: 'Busy Signal – One More Night' },
 ];
 
-// Build now-playing UI with volume slider + shuffle
-const nowPlaying = document.createElement('div');
-nowPlaying.id = 'nowPlaying';
-nowPlaying.className = 'now-playing';
-nowPlaying.innerHTML = `
-  <div class="now-playing-inner">
-    <span class="np-icon">🎶</span>
-    <span class="np-text">Click 🎵 to play</span>
-  </div>
-  <div class="np-row">
-    <div class="np-controls">
-      <button class="np-btn" id="prevTrack" title="Previous">⏮</button>
-      <button class="np-btn" id="nextTrack" title="Next">⏭</button>
-      <button class="np-btn" id="shuffleBtn" title="Shuffle">🔀</button>
-    </div>
-    <div class="np-volume">
-      <span class="vol-icon">🔊</span>
-      <input type="range" id="volumeSlider" min="0" max="100" value="50" class="volume-slider" title="Volume">
-    </div>
-  </div>
-`;
-document.body.appendChild(nowPlaying);
+const ytFrame = document.getElementById('ytFrame');
+const mpPlaylist = document.getElementById('mpPlaylist');
+const mpTrackInfo = document.getElementById('mpTrackInfo');
+const musicPlayerBody = document.getElementById('musicPlayerBody');
+const musicPlayerToggle = document.getElementById('musicPlayerToggle');
+const mpArrow = document.getElementById('mpArrow');
+let playerOpen = true;
 
-// Hidden but VISIBLE player container (1x1, opacity 0.01 — not display:none)
-// This is the key fix: browsers need a "visible" element for autoplay
-const playerWrapper = document.createElement('div');
-playerWrapper.id = 'ytPlayerWrapper';
-playerWrapper.style.cssText = 'position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
-const playerDiv = document.createElement('div');
-playerDiv.id = 'ytPlayerContainer';
-playerWrapper.appendChild(playerDiv);
-document.body.appendChild(playerWrapper);
-
-// Load YouTube IFrame API
-function loadYouTubeAPI() {
-    return new Promise((resolve) => {
-        if (window.YT && window.YT.Player) return resolve();
-        const tag = document.createElement('script');
-        tag.src = 'https://www.youtube.com/iframe_api';
-        document.head.appendChild(tag);
-        window.onYouTubeIframeAPIReady = resolve;
+// Build playlist UI
+function buildPlaylist() {
+    mpPlaylist.innerHTML = '';
+    playlist.forEach((track, i) => {
+        const item = document.createElement('div');
+        item.className = 'mp-track' + (i === currentTrack ? ' active' : '');
+        item.innerHTML = `<span class="mp-track-num">${i + 1}</span><span class="mp-track-name">${track.title}</span>`;
+        item.addEventListener('click', () => playTrack(i));
+        mpPlaylist.appendChild(item);
     });
 }
 
-// Create or reuse the YT player
-function initPlayer(videoId) {
-    if (ytPlayer && ytReady) {
-        ytPlayer.loadVideoById(videoId);
-        return;
-    }
-    ytPlayer = new YT.Player('ytPlayerContainer', {
-        width: '1',
-        height: '1',
-        videoId: videoId,
-        playerVars: {
-            autoplay: 1,
-            controls: 0,
-            rel: 0,
-            modestbranding: 1,
-            playsinline: 1,
-            origin: window.location.origin
-        },
-        events: {
-            onReady: (e) => {
-                ytReady = true;
-                e.target.setVolume(currentVolume);
-                e.target.playVideo();
-                updateNowPlaying();
-            },
-            onStateChange: (e) => {
-                if (e.data === YT.PlayerState.ENDED) {
-                    advanceTrack();
-                }
-                // If unstarted or cued, try playing
-                if (e.data === YT.PlayerState.CUED) {
-                    e.target.playVideo();
-                }
-            },
-            onError: () => {
-                // Skip to next track on error
-                advanceTrack();
-            }
-        }
+function playTrack(index) {
+    currentTrack = index;
+    const track = playlist[currentTrack];
+    // Set iframe src — autoplay=1 works because user clicked
+    ytFrame.src = `https://www.youtube.com/embed/${track.id}?autoplay=1&rel=0&modestbranding=1`;
+    ytFrame.style.opacity = '1';
+    mpTrackInfo.textContent = `▶ ${track.title}`;
+    // Update active state in list
+    document.querySelectorAll('.mp-track').forEach((el, i) => {
+        el.classList.toggle('active', i === currentTrack);
     });
 }
 
-function updateNowPlaying() {
-    const text = nowPlaying.querySelector('.np-text');
-    text.textContent = playlist[currentTrack].title;
-    nowPlaying.classList.add('visible');
-    // Update shuffle button state
-    const sBtn = document.getElementById('shuffleBtn');
-    sBtn.classList.toggle('active', shuffleOn);
-}
-
-function advanceTrack() {
+function nextTrack() {
     if (shuffleOn) {
         let next;
         do { next = Math.floor(Math.random() * playlist.length); } while (next === currentTrack && playlist.length > 1);
-        currentTrack = next;
+        playTrack(next);
     } else {
-        currentTrack = (currentTrack + 1) % playlist.length;
+        playTrack((currentTrack + 1) % playlist.length);
     }
-    updateNowPlaying();
-    if (ytReady && ytPlayer) ytPlayer.loadVideoById(playlist[currentTrack].id);
 }
 
-function goToPrev() {
+function prevTrack() {
     if (shuffleOn) {
         let next;
         do { next = Math.floor(Math.random() * playlist.length); } while (next === currentTrack && playlist.length > 1);
-        currentTrack = next;
+        playTrack(next);
     } else {
-        currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+        playTrack((currentTrack - 1 + playlist.length) % playlist.length);
     }
-    updateNowPlaying();
-    if (ytReady && ytPlayer) ytPlayer.loadVideoById(playlist[currentTrack].id);
 }
 
-// Main toggle
-musicToggle.addEventListener('click', async () => {
-    if (!ytReady) {
-        await loadYouTubeAPI();
-        isPlaying = true;
-        initPlayer(playlist[currentTrack].id);
-        musicToggle.classList.add('playing');
-        musicToggle.textContent = '🎶';
-        updateNowPlaying();
-        return;
-    }
-
-    if (isPlaying) {
-        ytPlayer.pauseVideo();
-        musicToggle.classList.remove('playing');
-        musicToggle.textContent = '🎵';
-    } else {
-        ytPlayer.playVideo();
-        musicToggle.classList.add('playing');
-        musicToggle.textContent = '🎶';
-    }
-    isPlaying = !isPlaying;
+// Toggle player open/close
+musicPlayerToggle.addEventListener('click', () => {
+    playerOpen = !playerOpen;
+    musicPlayerBody.style.display = playerOpen ? 'block' : 'none';
+    mpArrow.textContent = playerOpen ? '▼' : '▲';
 });
 
-// Controls
-document.getElementById('prevTrack').addEventListener('click', (e) => { e.stopPropagation(); goToPrev(); });
-document.getElementById('nextTrack').addEventListener('click', (e) => { e.stopPropagation(); advanceTrack(); });
-document.getElementById('shuffleBtn').addEventListener('click', (e) => {
-    e.stopPropagation();
-    shuffleOn = !shuffleOn;
-    document.getElementById('shuffleBtn').classList.toggle('active', shuffleOn);
-});
-
-// Volume slider
-document.getElementById('volumeSlider').addEventListener('input', (e) => {
-    currentVolume = parseInt(e.target.value);
-    if (ytReady && ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(currentVolume);
-    const icon = nowPlaying.querySelector('.vol-icon');
-    icon.textContent = currentVolume === 0 ? '🔇' : currentVolume < 40 ? '🔉' : '🔊';
-});
+// Build it on load
+buildPlaylist();
 
 // ===========================
 // PARALLAX ON SCROLL
@@ -509,7 +407,7 @@ window.addEventListener('scroll', () => {
 // ===========================
 document.addEventListener('click', (e) => {
     // Don't create hearts on interactive elements
-    if (e.target.closest('button, .envelope, canvas')) return;
+    if (e.target.closest('button, .envelope, canvas, .music-player')) return;
     
     for (let i = 0; i < 3; i++) {
         setTimeout(() => createClickHeart(e.clientX, e.clientY), i * 80);

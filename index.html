@@ -240,10 +240,28 @@
         </div>
     </section>
 
-    <!-- Music toggle -->
-    <button class="music-toggle" id="musicToggle" title="Toggle ambient music">
-        🎵
-    </button>
+    <!-- ====== MUSIC PLAYER ====== -->
+    <div class="music-player" id="musicPlayer">
+        <div class="music-player-header" id="musicPlayerToggle">
+            <span class="mp-icon">🎶</span>
+            <span class="mp-title">Dancehall Vibes</span>
+            <span class="mp-arrow" id="mpArrow">▲</span>
+        </div>
+        <div class="music-player-body" id="musicPlayerBody">
+            <div class="mp-track-info" id="mpTrackInfo">Select a track 💙</div>
+            <div class="mp-playlist" id="mpPlaylist"></div>
+            <div class="mp-yt-container">
+                <iframe id="ytFrame" 
+                    width="100%" height="60" 
+                    src="" 
+                    frameborder="0" 
+                    allow="autoplay; encrypted-media" 
+                    allowfullscreen
+                    style="border-radius: 8px; opacity: 0; transition: opacity 0.3s;">
+                </iframe>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

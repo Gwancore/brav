@@ -298,23 +298,28 @@ loveBtn.addEventListener('click', (e) => {
 });
 
 // ===========================
-// VYBZ KARTEL DANCEHALL PLAYER 🎶
+// YOUTUBE-BASED DANCEHALL PLAYER (YouTube IFrame API)
+// - Uses the IFrame API for reliable control (play/pause/next/prev)
+// - Includes multiple artists; you can add/remove video IDs in `playlist`
 // ===========================
 const musicToggle = document.getElementById('musicToggle');
 let isPlaying = false;
-let player = null;
+let ytPlayer = null;
+let ytReady = false;
 let currentTrack = 0;
 
-// Vybz Kartel love songs (YouTube video IDs)
+// curated dancehall playlist (video IDs). Add more IDs as you like.
 const playlist = [
-    { id: 'pLgQMfaFMoA', title: 'Vybz Kartel - Sometimes Love Dies' },
-    { id: 'CflpGXx5MsU', title: 'Vybz Kartel - Colouring This Life' },
-    { id: 'V6vGNPCkMnE', title: 'Vybz Kartel - I Promise You' },
-    { id: '7v6RbGGF11M', title: 'Vybz Kartel - My Heaven My Hell' },
-    { id: 'kC2SMXy7_Hk', title: 'Vybz Kartel - Forever' },
+        // Vybz Kartel
+        { id: 'pLgQMfaFMoA', title: 'Vybz Kartel - Sometimes Love Dies' },
+        { id: 'CflpGXx5MsU', title: 'Vybz Kartel - Colouring This Life' },
+        // Dancehall / related artists
+        { id: 'dQw4w9WgXcQ', title: 'Sean Paul - placeholder (replace with favorite)' },
+        { id: '3JZ_D3ELwOQ', title: 'Shaggy - placeholder (replace with favorite)' },
+        { id: 'V6vGNPCkMnE', title: 'Vybz Kartel - I Promise You' }
 ];
 
-// Now Playing display
+// Now playing UI
 const nowPlaying = document.createElement('div');
 nowPlaying.id = 'nowPlaying';
 nowPlaying.className = 'now-playing';
@@ -330,24 +335,80 @@ nowPlaying.innerHTML = `
 `;
 document.body.appendChild(nowPlaying);
 
-// Create hidden YouTube iframe for audio
-function createPlayer(videoId) {
-    // Remove old iframe if exists
-    const oldFrame = document.getElementById('ytPlayer');
-    if (oldFrame) oldFrame.remove();
+// load YouTube IFrame API if not present
+function loadYouTubeAPI() {
+    return new Promise((resolve) => {
+        if (window.YT && window.YT.Player) return resolve();
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-    const iframe = document.createElement('iframe');
-    iframe.id = 'ytPlayer';
-    iframe.width = '0';
-    iframe.height = '0';
-    iframe.style.position = 'absolute';
-    iframe.style.top = '-9999px';
-    iframe.style.left = '-9999px';
-    iframe.allow = 'autoplay';
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&enablejsapi=1`;
-    document.body.appendChild(iframe);
-    
-    updateNowPlaying();
+        window.onYouTubeIframeAPIReady = () => {
+            resolve();
+        };
+    });
+}
+
+function createYTPlayer(videoId) {
+    // ensure a container exists
+    let container = document.getElementById('ytPlayerContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'ytPlayerContainer';
+        container.style.width = '0';
+        container.style.height = '0';
+        container.style.overflow = 'hidden';
+        container.style.position = 'absolute';
+        container.style.left = '-9999px';
+        document.body.appendChild(container);
+    }
+
+    if (ytPlayer) {
+        // just load the new video
+        try {
+            ytPlayer.loadVideoById(videoId);
+        } catch (e) {
+            // recreate if needed
+            ytPlayer.destroy();
+            ytPlayer = null;
+        }
+    }
+
+    if (!ytPlayer) {
+        ytPlayer = new YT.Player('ytPlayerContainer', {
+            height: '0',
+            width: '0',
+            videoId: videoId,
+            playerVars: {
+                autoplay: 0,
+                controls: 0,
+                rel: 0,
+                modestbranding: 1
+            },
+            events: {
+                onReady: (e) => {
+                    ytReady = true;
+                    updateNowPlaying();
+                    // play immediately if requested
+                    if (isPlaying) e.target.playVideo();
+                },
+                onStateChange: (e) => {
+                    // if video ended, go to next track
+                    if (e.data === YT.PlayerState.ENDED) {
+                        nextTrack();
+                    }
+                },
+                onError: (e) => {
+                    // show fallback: open on YouTube
+                    const text = nowPlaying.querySelector('.np-text');
+                    text.textContent = 'Playback blocked — open on YouTube';
+                    text.style.cursor = 'pointer';
+                    text.onclick = () => window.open(`https://www.youtube.com/watch?v=${playlist[currentTrack].id}`, '_blank');
+                }
+            }
+        });
+    }
 }
 
 function updateNowPlaying() {
@@ -356,29 +417,47 @@ function updateNowPlaying() {
     nowPlaying.classList.add('visible');
 }
 
+function playCurrent() {
+    if (!ytReady) return;
+    if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
+}
+
+function pauseCurrent() {
+    if (!ytReady) return;
+    if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+}
+
 function nextTrack() {
     currentTrack = (currentTrack + 1) % playlist.length;
-    if (isPlaying) createPlayer(playlist[currentTrack].id);
     updateNowPlaying();
+    if (ytReady) {
+        ytPlayer.loadVideoById(playlist[currentTrack].id);
+    }
 }
 
 function prevTrack() {
     currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
-    if (isPlaying) createPlayer(playlist[currentTrack].id);
     updateNowPlaying();
+    if (ytReady) {
+        ytPlayer.loadVideoById(playlist[currentTrack].id);
+    }
 }
 
-musicToggle.addEventListener('click', () => {
+musicToggle.addEventListener('click', async () => {
+    // user gesture: initialize API/player
+    if (!ytReady) {
+        await loadYouTubeAPI();
+        createYTPlayer(playlist[currentTrack].id);
+    }
+
     if (isPlaying) {
-        // Stop
-        const frame = document.getElementById('ytPlayer');
-        if (frame) frame.remove();
+        pauseCurrent();
         musicToggle.classList.remove('playing');
         musicToggle.textContent = '🎵';
-        nowPlaying.classList.remove('visible');
     } else {
-        // Play
-        createPlayer(playlist[currentTrack].id);
+        // ensure player exists and play
+        if (!ytPlayer) createYTPlayer(playlist[currentTrack].id);
+        playCurrent();
         musicToggle.classList.add('playing');
         musicToggle.textContent = '🎶';
     }
@@ -388,10 +467,12 @@ musicToggle.addEventListener('click', () => {
 document.getElementById('prevTrack').addEventListener('click', (e) => {
     e.stopPropagation();
     prevTrack();
+    if (isPlaying && ytReady) playCurrent();
 });
 document.getElementById('nextTrack').addEventListener('click', (e) => {
     e.stopPropagation();
     nextTrack();
+    if (isPlaying && ytReady) playCurrent();
 });
 
 // ===========================

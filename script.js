@@ -46,19 +46,25 @@ class Star {
         this.opacity = Math.random() * 0.8 + 0.2;
         this.twinkleSpeed = Math.random() * 0.02 + 0.005;
         this.twinkleOffset = Math.random() * Math.PI * 2;
+        // Mix of blue and grey-white stars
+        this.isGrey = Math.random() > 0.6;
     }
     draw(time) {
         const twinkle = Math.sin(time * this.twinkleSpeed + this.twinkleOffset) * 0.5 + 0.5;
         const alpha = this.opacity * twinkle;
         starsCtx.beginPath();
         starsCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        starsCtx.fillStyle = `rgba(147, 197, 253, ${alpha})`;
+        starsCtx.fillStyle = this.isGrey 
+            ? `rgba(209, 213, 219, ${alpha})` 
+            : `rgba(147, 197, 253, ${alpha})`;
         starsCtx.fill();
 
         // Glow
         starsCtx.beginPath();
         starsCtx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
-        starsCtx.fillStyle = `rgba(59, 130, 246, ${alpha * 0.1})`;
+        starsCtx.fillStyle = this.isGrey
+            ? `rgba(156, 163, 175, ${alpha * 0.08})`
+            : `rgba(59, 130, 246, ${alpha * 0.1})`;
         starsCtx.fill();
     }
 }
@@ -292,70 +298,100 @@ loveBtn.addEventListener('click', (e) => {
 });
 
 // ===========================
-// AMBIENT SOUND (Web Audio API - soft tone)
+// VYBZ KARTEL DANCEHALL PLAYER 🎶
 // ===========================
 const musicToggle = document.getElementById('musicToggle');
-let audioCtx = null;
 let isPlaying = false;
-let gainNode = null;
+let player = null;
+let currentTrack = 0;
 
-function createAmbientSound() {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    gainNode = audioCtx.createGain();
-    gainNode.gain.value = 0;
-    gainNode.connect(audioCtx.destination);
+// Vybz Kartel love songs (YouTube video IDs)
+const playlist = [
+    { id: 'pLgQMfaFMoA', title: 'Vybz Kartel - Sometimes Love Dies' },
+    { id: 'CflpGXx5MsU', title: 'Vybz Kartel - Colouring This Life' },
+    { id: 'V6vGNPCkMnE', title: 'Vybz Kartel - I Promise You' },
+    { id: '7v6RbGGF11M', title: 'Vybz Kartel - My Heaven My Hell' },
+    { id: 'kC2SMXy7_Hk', title: 'Vybz Kartel - Forever' },
+];
 
-    // Create soft ambient chords
-    const frequencies = [261.63, 329.63, 392.00, 523.25]; // C major chord + octave
+// Now Playing display
+const nowPlaying = document.createElement('div');
+nowPlaying.id = 'nowPlaying';
+nowPlaying.className = 'now-playing';
+nowPlaying.innerHTML = `
+    <div class="now-playing-inner">
+        <span class="np-icon">🎶</span>
+        <span class="np-text">Click 🎵 to play</span>
+        <div class="np-controls">
+            <button class="np-btn" id="prevTrack">⏮</button>
+            <button class="np-btn" id="nextTrack">⏭</button>
+        </div>
+    </div>
+`;
+document.body.appendChild(nowPlaying);
+
+// Create hidden YouTube iframe for audio
+function createPlayer(videoId) {
+    // Remove old iframe if exists
+    const oldFrame = document.getElementById('ytPlayer');
+    if (oldFrame) oldFrame.remove();
+
+    const iframe = document.createElement('iframe');
+    iframe.id = 'ytPlayer';
+    iframe.width = '0';
+    iframe.height = '0';
+    iframe.style.position = 'absolute';
+    iframe.style.top = '-9999px';
+    iframe.style.left = '-9999px';
+    iframe.allow = 'autoplay';
+    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&enablejsapi=1`;
+    document.body.appendChild(iframe);
     
-    frequencies.forEach((freq, i) => {
-        const osc = audioCtx.createOscillator();
-        const oscGain = audioCtx.createGain();
-        
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        oscGain.gain.value = 0.04;
-        
-        // Slight detuning for warmth
-        const detune = audioCtx.createOscillator();
-        detune.type = 'sine';
-        detune.frequency.value = freq * 1.002;
-        const detuneGain = audioCtx.createGain();
-        detuneGain.gain.value = 0.02;
-        
-        osc.connect(oscGain);
-        oscGain.connect(gainNode);
-        detune.connect(detuneGain);
-        detuneGain.connect(gainNode);
-        
-        osc.start();
-        detune.start();
-        
-        // Gentle LFO for movement
-        const lfo = audioCtx.createOscillator();
-        lfo.frequency.value = 0.1 + i * 0.05;
-        const lfoGain = audioCtx.createGain();
-        lfoGain.gain.value = 0.01;
-        lfo.connect(lfoGain);
-        lfoGain.connect(oscGain.gain);
-        lfo.start();
-    });
+    updateNowPlaying();
+}
+
+function updateNowPlaying() {
+    const text = nowPlaying.querySelector('.np-text');
+    text.textContent = playlist[currentTrack].title;
+    nowPlaying.classList.add('visible');
+}
+
+function nextTrack() {
+    currentTrack = (currentTrack + 1) % playlist.length;
+    if (isPlaying) createPlayer(playlist[currentTrack].id);
+    updateNowPlaying();
+}
+
+function prevTrack() {
+    currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+    if (isPlaying) createPlayer(playlist[currentTrack].id);
+    updateNowPlaying();
 }
 
 musicToggle.addEventListener('click', () => {
-    if (!audioCtx) createAmbientSound();
-    
     if (isPlaying) {
-        gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+        // Stop
+        const frame = document.getElementById('ytPlayer');
+        if (frame) frame.remove();
         musicToggle.classList.remove('playing');
         musicToggle.textContent = '🎵';
+        nowPlaying.classList.remove('visible');
     } else {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        gainNode.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 1);
+        // Play
+        createPlayer(playlist[currentTrack].id);
         musicToggle.classList.add('playing');
         musicToggle.textContent = '🎶';
     }
     isPlaying = !isPlaying;
+});
+
+document.getElementById('prevTrack').addEventListener('click', (e) => {
+    e.stopPropagation();
+    prevTrack();
+});
+document.getElementById('nextTrack').addEventListener('click', (e) => {
+    e.stopPropagation();
+    nextTrack();
 });
 
 // ===========================

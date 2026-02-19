@@ -19,8 +19,18 @@
     --blue-800: #1e40af;
     --blue-900: #1e3a8a;
     --blue-950: #0c1e4a;
-    --dark-bg: #030712;
-    --dark-surface: #0a1628;
+    --grey-50: #f9fafb;
+    --grey-100: #f3f4f6;
+    --grey-200: #e5e7eb;
+    --grey-300: #d1d5db;
+    --grey-400: #9ca3af;
+    --grey-500: #6b7280;
+    --grey-600: #4b5563;
+    --grey-700: #374151;
+    --grey-800: #1f2937;
+    --grey-900: #111827;
+    --dark-bg: #0a0d12;
+    --dark-surface: #111827;
     --glow-blue: rgba(59, 130, 246, 0.4);
     --glow-blue-strong: rgba(59, 130, 246, 0.7);
 }
@@ -28,7 +38,7 @@
 html {
     scroll-behavior: smooth;
     scrollbar-width: thin;
-    scrollbar-color: var(--blue-600) var(--dark-bg);
+    scrollbar-color: var(--blue-600) var(--grey-900);
 }
 
 body {
@@ -103,7 +113,7 @@ body {
    LANDING SECTION
    =========================== */
 .landing {
-    background: radial-gradient(ellipse at center, var(--dark-surface) 0%, var(--dark-bg) 70%);
+    background: radial-gradient(ellipse at center, var(--grey-900) 0%, var(--dark-bg) 70%);
 }
 
 .landing-content {
@@ -172,7 +182,7 @@ body {
 
 .scroll-indicator span {
     font-size: 0.8rem;
-    color: var(--blue-400);
+    color: var(--grey-400);
     letter-spacing: 3px;
     text-transform: uppercase;
 }
@@ -180,7 +190,7 @@ body {
 .mouse {
     width: 26px;
     height: 42px;
-    border: 2px solid var(--blue-400);
+    border: 2px solid var(--grey-400);
     border-radius: 13px;
     position: relative;
 }
@@ -249,8 +259,8 @@ body {
 }
 
 .reason-card {
-    background: linear-gradient(135deg, rgba(30, 58, 138, 0.2), rgba(59, 130, 246, 0.05));
-    border: 1px solid rgba(59, 130, 246, 0.15);
+    background: linear-gradient(135deg, rgba(31, 41, 55, 0.5), rgba(30, 58, 138, 0.15), rgba(55, 65, 81, 0.3));
+    border: 1px solid rgba(107, 114, 128, 0.2);
     border-radius: 20px;
     padding: 40px 30px;
     text-align: center;
@@ -260,6 +270,7 @@ body {
     position: relative;
     overflow: hidden;
     cursor: none;
+    backdrop-filter: blur(10px);
 }
 
 .reason-card::before {
@@ -286,7 +297,7 @@ body {
 .reason-card:hover {
     border-color: var(--blue-400);
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15), 0 0 40px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.12), 0 0 40px rgba(107, 114, 128, 0.08);
 }
 
 .reason-icon {
@@ -309,7 +320,7 @@ body {
 
 .reason-card p {
     font-size: 0.95rem;
-    color: var(--blue-200);
+    color: var(--grey-300);
     line-height: 1.6;
     font-weight: 300;
 }
@@ -348,14 +359,14 @@ body {
 .envelope-body {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, var(--blue-800), var(--blue-900));
+    background: linear-gradient(135deg, var(--grey-800), var(--blue-900), var(--grey-900));
     border-radius: 10px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 130, 246, 0.1);
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(107, 114, 128, 0.2);
 }
 
 .envelope-hint {
@@ -371,7 +382,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    background: linear-gradient(135deg, var(--blue-700), var(--blue-800));
+    background: linear-gradient(135deg, var(--grey-700), var(--blue-800));
     clip-path: polygon(0 0, 50% 100%, 100% 0);
     transform-origin: top;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -388,7 +399,7 @@ body {
     width: 90%;
     left: 5%;
     bottom: 10px;
-    background: linear-gradient(180deg, #f0f4ff, #e0e8ff);
+    background: linear-gradient(180deg, #f3f4f6, #e5e7eb);
     border-radius: 8px;
     padding: 30px;
     transform: translateY(0);
@@ -456,15 +467,15 @@ body {
     width: 100%;
     max-width: 800px;
     height: 400px;
-    border: 1px solid rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(107, 114, 128, 0.2);
     border-radius: 20px;
-    background: rgba(10, 22, 40, 0.5);
+    background: rgba(17, 24, 39, 0.6);
     cursor: crosshair;
     transition: box-shadow 0.3s;
 }
 
 #constellationCanvas:hover {
-    box-shadow: 0 0 40px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.1), 0 0 20px rgba(107, 114, 128, 0.05);
 }
 
 /* ===========================
@@ -522,16 +533,17 @@ body {
 }
 
 .timeline-content {
-    background: linear-gradient(135deg, rgba(30, 58, 138, 0.15), rgba(59, 130, 246, 0.05));
-    border: 1px solid rgba(59, 130, 246, 0.1);
+    background: linear-gradient(135deg, rgba(31, 41, 55, 0.4), rgba(30, 58, 138, 0.12), rgba(55, 65, 81, 0.2));
+    border: 1px solid rgba(107, 114, 128, 0.15);
     border-radius: 16px;
     padding: 25px 30px;
     transition: all 0.3s;
+    backdrop-filter: blur(8px);
 }
 
 .timeline-item:hover .timeline-content {
     border-color: var(--blue-400);
-    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.08), 0 5px 20px rgba(107, 114, 128, 0.05);
     transform: translateX(5px);
 }
 
@@ -544,7 +556,7 @@ body {
 
 .timeline-content p {
     font-size: 0.95rem;
-    color: var(--blue-200);
+    color: var(--grey-300);
     line-height: 1.6;
     font-weight: 300;
 }
@@ -671,7 +683,7 @@ body {
    INFINITY SECTION
    =========================== */
 .infinity {
-    background: radial-gradient(ellipse at center, var(--dark-surface) 0%, var(--dark-bg) 70%);
+    background: radial-gradient(ellipse at center, var(--grey-900) 0%, var(--dark-bg) 70%);
 }
 
 .infinity-content {
@@ -715,9 +727,9 @@ body {
 }
 
 .love-btn {
-    background: linear-gradient(135deg, var(--blue-600), var(--blue-700));
+    background: linear-gradient(135deg, var(--blue-600), var(--grey-700), var(--blue-700));
     color: white;
-    border: 1px solid var(--blue-500);
+    border: 1px solid rgba(107, 114, 128, 0.3);
     padding: 16px 40px;
     border-radius: 50px;
     font-family: 'Poppins', sans-serif;
@@ -726,12 +738,12 @@ body {
     position: relative;
     overflow: hidden;
     transition: all 0.3s;
-    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.15), 0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
 .love-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 15px 50px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 15px 50px rgba(59, 130, 246, 0.3), 0 5px 25px rgba(107, 114, 128, 0.1);
     border-color: var(--blue-400);
 }
 
@@ -742,7 +754,7 @@ body {
 .love-count {
     margin-top: 20px;
     font-size: 0.95rem;
-    color: var(--blue-300);
+    color: var(--grey-400);
     font-weight: 300;
 }
 
@@ -755,7 +767,7 @@ body {
    FINAL SECTION
    =========================== */
 .final {
-    background: radial-gradient(ellipse at center, rgba(30, 58, 138, 0.2), var(--dark-bg));
+    background: radial-gradient(ellipse at center, rgba(31, 41, 55, 0.3), var(--dark-bg));
     min-height: 100vh;
 }
 
@@ -822,8 +834,8 @@ body {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(30, 58, 138, 0.5);
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: rgba(31, 41, 55, 0.7);
+    border: 1px solid rgba(107, 114, 128, 0.3);
     font-size: 1.3rem;
     cursor: pointer;
     z-index: 100;
@@ -907,5 +919,89 @@ body {
 
     .flower:hover .stem {
         height: 110px;
+    }
+}
+
+/* ===========================
+   NOW PLAYING BAR
+   =========================== */
+.now-playing {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: rgba(10, 22, 40, 0.85);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 16px;
+    padding: 12px 18px;
+    z-index: 100;
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    max-width: 300px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.now-playing.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+}
+
+.now-playing-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.np-icon {
+    font-size: 1.2rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.np-text {
+    font-size: 0.8rem;
+    color: var(--blue-300);
+    font-weight: 300;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.np-controls {
+    display: flex;
+    gap: 6px;
+}
+
+.np-btn {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: var(--blue-300);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.np-btn:hover {
+    background: rgba(59, 130, 246, 0.3);
+    border-color: var(--blue-400);
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .now-playing {
+        right: 10px;
+        bottom: 85px;
+        max-width: 250px;
     }
 }

@@ -929,21 +929,21 @@ body {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 300px;
-    background: rgba(10, 22, 40, 0.92);
+    width: 280px;
+    background: rgba(10, 22, 40, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(59, 130, 246, 0.2);
-    border-radius: 16px;
+    border-radius: 14px;
     z-index: 200;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     overflow: hidden;
 }
 
 .music-player-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
+    gap: 8px;
+    padding: 10px 14px;
     cursor: pointer;
     user-select: none;
     transition: background 0.2s;
@@ -954,27 +954,48 @@ body {
 }
 
 .mp-icon {
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 .mp-title {
     font-family: 'Dancing Script', cursive;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     color: var(--blue-300);
     flex: 1;
 }
 
 .mp-arrow {
     color: var(--blue-400);
-    font-size: 0.65rem;
+    font-size: 0.6rem;
+    transition: transform 0.3s;
 }
 
 .music-player-body {
-    padding: 0 10px 10px;
+    padding: 0 6px 8px;
 }
 
-.music-player-body iframe {
-    border-radius: 12px;
+.mp-tracks {
+    max-height: 180px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59,130,246,0.3) transparent;
+}
+
+.mp-tracks::-webkit-scrollbar {
+    width: 4px;
+}
+
+.mp-tracks::-webkit-scrollbar-thumb {
+    background: rgba(59,130,246,0.3);
+    border-radius: 2px;
+}
+
+.mp-tracks iframe {
+    border-radius: 6px;
+    min-height: 20px;
 }
 
 /* Hide old toggle */

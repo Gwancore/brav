@@ -298,97 +298,22 @@ loveBtn.addEventListener('click', (e) => {
 });
 
 // ===========================
-// DANCEHALL MUSIC PLAYER 🎶
-// Simple & reliable: visible YouTube embed + clickable playlist
-// No IFrame API, no autoplay hacks — just works.
+// MINIMAL MUSIC PLAYER (Spotify embed)
+// Just a toggle to show/hide the player
 // ===========================
-let currentTrack = 0;
-let shuffleOn = false;
-
-const playlist = [
-    // Vybz Kartel
-    { id: 'pLgQMfaFMoA', title: 'Vybz Kartel – Sometimes Love Dies' },
-    { id: 'CflpGXx5MsU', title: 'Vybz Kartel – Colouring This Life' },
-    { id: 'V6vGNPCkMnE', title: 'Vybz Kartel – I Promise You' },
-    { id: '7v6RbGGF11M', title: 'Vybz Kartel – My Heaven My Hell' },
-    { id: 'cVHdCmVNJQk', title: 'Vybz Kartel – Yuh Love' },
-    // Sean Paul
-    { id: 'k5mwREcOxgY', title: 'Sean Paul – No Lie' },
-    { id: 'dW2MmuFGHQI', title: 'Sean Paul – Get Busy' },
-    // Shaggy
-    { id: 'CBMiJJB-hvY', title: 'Shaggy – Angel' },
-    // Popcaan
-    { id: 'X2G1fBMt2EE', title: 'Popcaan – Forever' },
-    // Alkaline
-    { id: 'sS8VjPIbfDo', title: 'Alkaline – Ocean Wave' },
-    // Mavado
-    { id: 'T_HoNHqEe5I', title: 'Mavado – Come Into My Room' },
-    // Busy Signal
-    { id: 'jgGqVMrpL2s', title: 'Busy Signal – One More Night' },
-];
-
-const ytFrame = document.getElementById('ytFrame');
-const mpPlaylist = document.getElementById('mpPlaylist');
-const mpTrackInfo = document.getElementById('mpTrackInfo');
 const musicPlayerBody = document.getElementById('musicPlayerBody');
 const musicPlayerToggle = document.getElementById('musicPlayerToggle');
 const mpArrow = document.getElementById('mpArrow');
-let playerOpen = true;
+let playerOpen = false;
 
-// Build playlist UI
-function buildPlaylist() {
-    mpPlaylist.innerHTML = '';
-    playlist.forEach((track, i) => {
-        const item = document.createElement('div');
-        item.className = 'mp-track' + (i === currentTrack ? ' active' : '');
-        item.innerHTML = `<span class="mp-track-num">${i + 1}</span><span class="mp-track-name">${track.title}</span>`;
-        item.addEventListener('click', () => playTrack(i));
-        mpPlaylist.appendChild(item);
-    });
-}
+// Start collapsed
+musicPlayerBody.style.display = 'none';
 
-function playTrack(index) {
-    currentTrack = index;
-    const track = playlist[currentTrack];
-    // Set iframe src — autoplay=1 works because user clicked
-    ytFrame.src = `https://www.youtube.com/embed/${track.id}?autoplay=1&rel=0&modestbranding=1`;
-    ytFrame.style.opacity = '1';
-    mpTrackInfo.textContent = `▶ ${track.title}`;
-    // Update active state in list
-    document.querySelectorAll('.mp-track').forEach((el, i) => {
-        el.classList.toggle('active', i === currentTrack);
-    });
-}
-
-function nextTrack() {
-    if (shuffleOn) {
-        let next;
-        do { next = Math.floor(Math.random() * playlist.length); } while (next === currentTrack && playlist.length > 1);
-        playTrack(next);
-    } else {
-        playTrack((currentTrack + 1) % playlist.length);
-    }
-}
-
-function prevTrack() {
-    if (shuffleOn) {
-        let next;
-        do { next = Math.floor(Math.random() * playlist.length); } while (next === currentTrack && playlist.length > 1);
-        playTrack(next);
-    } else {
-        playTrack((currentTrack - 1 + playlist.length) % playlist.length);
-    }
-}
-
-// Toggle player open/close
 musicPlayerToggle.addEventListener('click', () => {
     playerOpen = !playerOpen;
     musicPlayerBody.style.display = playerOpen ? 'block' : 'none';
     mpArrow.textContent = playerOpen ? '▼' : '▲';
 });
-
-// Build it on load
-buildPlaylist();
 
 // ===========================
 // PARALLAX ON SCROLL
@@ -406,7 +331,6 @@ window.addEventListener('scroll', () => {
 // CLICK ANYWHERE HEARTS
 // ===========================
 document.addEventListener('click', (e) => {
-    // Don't create hearts on interactive elements
     if (e.target.closest('button, .envelope, canvas, .music-player')) return;
     
     for (let i = 0; i < 3; i++) {

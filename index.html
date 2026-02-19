@@ -240,26 +240,25 @@
         </div>
     </section>
 
-    <!-- ====== MUSIC PLAYER ====== -->
+    <!-- ====== MINIMAL MUSIC PLAYER ====== -->
     <div class="music-player" id="musicPlayer">
         <div class="music-player-header" id="musicPlayerToggle">
             <span class="mp-icon">🎶</span>
             <span class="mp-title">Dancehall Vibes</span>
-            <span class="mp-arrow" id="mpArrow">▲</span>
+            <span class="mp-arrow" id="mpArrow">▼</span>
         </div>
         <div class="music-player-body" id="musicPlayerBody">
-            <div class="mp-track-info" id="mpTrackInfo">Select a track 💙</div>
-            <div class="mp-playlist" id="mpPlaylist"></div>
-            <div class="mp-yt-container">
-                <iframe id="ytFrame" 
-                    width="100%" height="60" 
-                    src="" 
-                    frameborder="0" 
-                    allow="autoplay; encrypted-media" 
-                    allowfullscreen
-                    style="border-radius: 8px; opacity: 0; transition: opacity 0.3s;">
-                </iframe>
-            </div>
+            <iframe 
+                id="spotifyEmbed"
+                style="border-radius: 12px" 
+                src="https://open.spotify.com/embed/playlist/37i9dQZF1DXan38dNVDdl4?utm_source=generator&theme=0" 
+                width="100%" 
+                height="152" 
+                frameBorder="0" 
+                allowfullscreen="" 
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                loading="lazy">
+            </iframe>
         </div>
     </div>
 

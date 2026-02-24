@@ -294,64 +294,372 @@ dreamBtn.addEventListener('click', addDream);
 dreamInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') addDream(); });
 renderDreams();
 
-// === MOOD ===
+// === MOOD ZONE ===
+
+// --- Tab switching ---
+document.querySelectorAll('.mood-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.mood-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.mood-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    });
+});
+
+// --- CHECK-IN TAB ---
 const moodResponses = {
-    happy: [
-        "That makes me so happy, Chia! Your happiness is my happiness 💙",
-        "Love to hear that! Keep that beautiful smile going ✨",
-        "A happy Chia = the best thing in the world 😊"
-    ],
-    loved: [
-        "Because you ARE so loved, Bravine. More than you'll ever know 💙",
-        "Good. That's exactly how you should feel. Always. 🥰",
-        "You deserve every bit of love the universe can give 💫"
-    ],
-    sad: [
-        "I wish I could hold you right now, Chia. It's okay to feel this way. You're not alone 💙",
-        "Hey... bad days don't last. But my love for you does. I'm here 🤍",
-        "Let yourself feel it, then let it go. Better days are coming, I promise 🌙"
-    ],
-    tired: [
-        "Rest, my love. You've done enough today. Tomorrow can wait 🌙",
-        "Close your eyes for a bit, Chia. You deserve a break 💙",
-        "Being tired means you've been giving your all. I'm so proud of you 🤍"
-    ],
-    anxious: [
-        "Breathe with me, Chia. In... and out... You're safe. I'm right here 💙",
-        "Whatever is worrying you — we'll figure it out. Together. Always. 🤍",
-        "Your anxiety doesn't define you. You are brave. You are strong. You are loved 🌙"
-    ],
-    excited: [
-        "YESSS! That energy! Tell me everything! 🤩💙",
-        "I love seeing you excited, Bravine! Your joy is contagious ✨",
-        "Channel that energy! The world isn't ready for you! 🔥💙"
-    ],
-    angry: [
-        "It's okay to be frustrated. Feel it, then release it. I'm here 💙",
-        "Whatever happened — your feelings are valid, Chia. Always. 🤍",
-        "Take a deep breath. I'm on your side. Always and forever 💙"
-    ],
-    grateful: [
-        "The world is grateful for YOU, Chia. Trust me on that 💙",
-        "A grateful heart is a beautiful heart. And yours is the most beautiful of all 🙏",
-        "I'm grateful too — for you. Every single day 💫"
-    ]
+    onfire: {
+        msgs: ["On FIRE?! I love that energy, Chia! 🔥", "You're unstoppable today. The world better watch out 💙", "That's my girl. Go set the world ablaze, beautiful ✨"],
+        action: null
+    },
+    happy: {
+        msgs: ["That smile... I can literally feel it from here 😊", "A happy Chia makes the whole universe brighter 💙", "You being happy is my favourite thing. Keep going, love ✨"],
+        action: null
+    },
+    loved: {
+        msgs: ["Good. Because you ARE incredibly loved, Bravine. Never doubt it 💙", "You deserve to feel this way every single day 🥰", "That warm feeling in your chest? That's us. That's real 💫"],
+        action: null
+    },
+    flirty: {
+        msgs: ["Oh? 😏 Someone's in a mood today...", "Flirty Chia is my favourite Chia... don't tell the others 😘", "You're dangerous when you're like this, you know that? 💙🔥"],
+        action: null
+    },
+    sad: {
+        msgs: ["Hey... come here. I wish I could hold you right now 💙", "It's okay to not be okay, Chia. I'm right here. I'm not going anywhere.", "Your sadness is safe with me. Let it out, love. I've got you 🤍"],
+        action: 'hug'
+    },
+    tired: {
+        msgs: ["You've been giving so much of yourself, Chia. It's okay to rest 🌙", "Close your eyes for a moment. The world can wait. You can't pour from an empty cup 💙", "Being tired means you've been fighting hard. I'm so proud of you 🤍"],
+        action: 'breathe'
+    },
+    anxious: {
+        msgs: ["Breathe with me, okay? In... hold... out... You're safe, Chia 💙", "Whatever's weighing on you — we'll face it together. You're never alone in this 🤍", "Your mind is racing but your heart knows the truth: you're going to be okay 🌙"],
+        action: 'breathe'
+    },
+    missing: {
+        msgs: ["I miss you too, Chia. So much it physically aches 💙", "The distance is temporary. What we have? That's forever 🥺", "Close your eyes and think of me. I'm doing the same thing right now 🤍"],
+        action: 'hug'
+    },
+    excited: {
+        msgs: ["YESSS!! I can feel the energy from here! Tell me EVERYTHING 🤩", "Excited Chia is literally my favourite version of you! Go off! 🔥💙", "Whatever's got you this hyped — you deserve it. Every bit of it ✨"],
+        action: null
+    },
+    grateful: {
+        msgs: ["The universe is grateful for YOU, Chia. Trust me on that 💙", "A grateful heart like yours is the most beautiful thing 🙏", "I'm grateful too — every day, for you. My greatest gift 💫"],
+        action: null
+    }
 };
+
 document.querySelectorAll('.mood-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         const mood = btn.dataset.mood;
-        const responses = moodResponses[mood];
-        const response = responses[Math.floor(Math.random() * responses.length)];
+        const data = moodResponses[mood];
+        if (!data) return;
+        const msg = data.msgs[Math.floor(Math.random() * data.msgs.length)];
+        const typingEl = document.getElementById('moodTyping');
         const textEl = document.getElementById('moodResponseText');
+        const actionEl = document.getElementById('moodAction');
         textEl.classList.remove('show');
+        actionEl.innerHTML = '';
+        typingEl.classList.add('show');
         setTimeout(() => {
-            textEl.textContent = response;
+            typingEl.classList.remove('show');
+            textEl.textContent = msg;
             textEl.classList.add('show');
-        }, 200);
+            if (data.action === 'hug') {
+                const hugBtn = document.createElement('button');
+                hugBtn.className = 'mood-action-btn show';
+                hugBtn.textContent = '🤗 Send me a hug';
+                hugBtn.addEventListener('click', () => {
+                    hugBtn.textContent = '💙 *wraps you in the biggest hug* 💙';
+                    hugBtn.style.pointerEvents = 'none';
+                    for (let i = 0; i < 12; i++) {
+                        setTimeout(() => {
+                            const rect = hugBtn.getBoundingClientRect();
+                            createClickHeart(rect.left + rect.width/2, rect.top);
+                        }, i * 80);
+                    }
+                });
+                actionEl.appendChild(hugBtn);
+            } else if (data.action === 'breathe') {
+                const breatheBtn = document.createElement('button');
+                breatheBtn.className = 'mood-action-btn show';
+                breatheBtn.textContent = '🌬️ Breathe with me';
+                breatheBtn.addEventListener('click', () => {
+                    breatheBtn.remove();
+                    let cycle = 0;
+                    const maxCycles = 3;
+                    function doBreathe() {
+                        if (cycle >= maxCycles) {
+                            actionEl.innerHTML = '<p style="color:var(--blue-300);font-size:0.9rem;animation:panelIn 0.4s ease">Feeling better? You\'re amazing, Chia 💙</p>';
+                            return;
+                        }
+                        actionEl.innerHTML = '<p style="color:var(--blue-300);font-size:1.1rem;font-family:Dancing Script,cursive;animation:panelIn 0.5s ease">Breathe in... 🌸</p>';
+                        setTimeout(() => {
+                            actionEl.innerHTML = '<p style="color:var(--blue-300);font-size:1.1rem;font-family:Dancing Script,cursive;animation:panelIn 0.5s ease">Hold... ✨</p>';
+                        }, 4000);
+                        setTimeout(() => {
+                            actionEl.innerHTML = '<p style="color:var(--blue-300);font-size:1.1rem;font-family:Dancing Script,cursive;animation:panelIn 0.5s ease">Breathe out... 🌙</p>';
+                        }, 7000);
+                        setTimeout(() => { cycle++; doBreathe(); }, 10000);
+                    }
+                    doBreathe();
+                });
+                actionEl.appendChild(breatheBtn);
+            }
+        }, 1200);
+        // Update streak
+        updateMoodStreak();
     });
 });
+
+function updateMoodStreak() {
+    const today = new Date().toDateString();
+    let streakData = JSON.parse(localStorage.getItem('chiaMoodStreak') || '{"last":"","count":0}');
+    if (streakData.last === today) {
+        document.getElementById('moodStreak').textContent = streakData.count;
+        return;
+    }
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (streakData.last === yesterday) {
+        streakData.count++;
+    } else {
+        streakData.count = 1;
+    }
+    streakData.last = today;
+    localStorage.setItem('chiaMoodStreak', JSON.stringify(streakData));
+    document.getElementById('moodStreak').textContent = streakData.count;
+}
+(function loadStreak() {
+    const data = JSON.parse(localStorage.getItem('chiaMoodStreak') || '{"last":"","count":0}');
+    document.getElementById('moodStreak').textContent = data.count;
+})();
+
+// --- LOVE DARE TAB ---
+const loveDares = [
+    "Send a voice note telling Chia 3 things you love about her right now",
+    "Write 'I love you' in the most creative way you can and send it",
+    "Tell her about a memory of her that makes you smile every time",
+    "Send her a photo of something that reminded you of her today",
+    "Write a 4-line poem about her eyes",
+    "Tell her what you'd do if you had 24 hours alone together",
+    "Describe your perfect date with her in detail",
+    "Send a goodnight message that would make her blush",
+    "Tell her what outfit of hers drives you crazy",
+    "Write about the moment you knew she was special",
+    "Send her a song that describes how you feel right now and explain why",
+    "Tell her 5 things you'd whisper in her ear if she was here",
+    "Describe what you'd cook for her on a cozy rainy day",
+    "Write a message she can read when she's having a bad day",
+    "Tell her your favourite physical thing about her — in detail 😏",
+    "Describe the life you want to build together",
+    "Send her a paragraph about what she smells like to you",
+    "Rate her cuteness on a scale of 1-10 and explain why it's 11",
+    "Tell her what you miss most about her when she's not around",
+    "Write about how she changed your life without even trying",
+    "Describe the hug you'd give her right now if you could",
+    "Tell her your favourite inside joke between you two",
+    "Plan a surprise for her and write it down as a promise",
+    "Send her a message starting with 'If you were here right now...'",
+    "Write about a future moment with her you can't wait for"
+];
+const loveLevels = [
+    {name:'Spark',min:0},{name:'Flame',min:3},{name:'Fire',min:7},
+    {name:'Inferno',min:12},{name:'Supernova',min:20},{name:'Eternal',min:30}
+];
+
+let dareData = JSON.parse(localStorage.getItem('chiaDareData') || '{"completed":0,"streak":0,"lastDate":"","currentIdx":-1,"accepted":false}');
+
+function getDareLevel(n) {
+    let level = loveLevels[0].name;
+    for (const l of loveLevels) { if (n >= l.min) level = l.name; }
+    return level;
+}
+function updateDareUI() {
+    document.getElementById('daresCompleted').textContent = dareData.completed;
+    document.getElementById('dareLevel').textContent = getDareLevel(dareData.completed);
+    const today = new Date().toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (dareData.lastDate === today || dareData.lastDate === yesterday) {
+        document.getElementById('dareStreak').textContent = dareData.streak;
+    } else if (dareData.lastDate !== '') {
+        dareData.streak = 0;
+        document.getElementById('dareStreak').textContent = 0;
+    }
+}
+function showNewDare() {
+    let idx;
+    do { idx = Math.floor(Math.random() * loveDares.length); } while (idx === dareData.currentIdx && loveDares.length > 1);
+    dareData.currentIdx = idx;
+    dareData.accepted = false;
+    localStorage.setItem('chiaDareData', JSON.stringify(dareData));
+    document.getElementById('dareText').textContent = loveDares[idx];
+    document.getElementById('dareCompleteArea').classList.remove('show');
+    document.getElementById('dareTimer').textContent = '';
+}
+document.getElementById('dareSkip').addEventListener('click', showNewDare);
+document.getElementById('dareAccept').addEventListener('click', () => {
+    dareData.accepted = true;
+    localStorage.setItem('chiaDareData', JSON.stringify(dareData));
+    document.getElementById('dareCompleteArea').classList.add('show');
+    document.getElementById('dareTimer').textContent = 'You got this, Chia! 💜';
+});
+document.getElementById('dareDone').addEventListener('click', () => {
+    dareData.completed++;
+    const today = new Date().toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (dareData.lastDate === yesterday || dareData.lastDate === today) {
+        if (dareData.lastDate !== today) dareData.streak++;
+    } else {
+        dareData.streak = 1;
+    }
+    dareData.lastDate = today;
+    dareData.accepted = false;
+    localStorage.setItem('chiaDareData', JSON.stringify(dareData));
+    updateDareUI();
+    showNewDare();
+    // celebrate
+    const card = document.getElementById('dareCard');
+    const rect = card.getBoundingClientRect();
+    for (let i = 0; i < 15; i++) {
+        setTimeout(() => createClickHeart(rect.left + Math.random() * rect.width, rect.top + Math.random() * rect.height), i * 60);
+    }
+});
+showNewDare();
+updateDareUI();
+
+// --- TRUTH OR DARE TAB ---
+const todTruths = [
+    "What's something about me that you've never told me?",
+    "What's your most romantic fantasy involving us?",
+    "What's the first thing you noticed about me?",
+    "If you could relive one moment with me, which would it be?",
+    "What's the most attractive thing I do without realizing?",
+    "Have you ever dreamed about me? What happened?",
+    "What's one thing you wish I did more often?",
+    "What song reminds you of us and why?",
+    "What's the bravest thing you've ever done for love?",
+    "If we had no rules for one night, what would we do?",
+    "What's a secret you've been keeping from me?",
+    "When did you first know you had feelings for me?",
+    "What's your favourite thing I've ever said to you?",
+    "What do you think about right before falling asleep?",
+    "What part of our relationship makes you the happiest?"
+];
+const todDares = [
+    "Send me the last photo in your camera roll",
+    "Write me a love confession in exactly 10 words",
+    "Record yourself saying 'I love you' in 3 different ways",
+    "Change your lock screen to something that represents us",
+    "Text me something you'd only say face to face",
+    "Do your best impression of me and send a video",
+    "Write my name on your hand and send a pic",
+    "Send me a selfie right now — no filter, no fixing",
+    "Describe what you'd do in the first 10 seconds of seeing me",
+    "Send me a paragraph starting with 'I need you to know...'"
+];
+const todSpicyQ = [
+    "What outfit would you want me to wear on a date night? 🔥",
+    "Describe your ideal kiss with me in detail 😏",
+    "If I was there right now, where would you touch me first?",
+    "What's the most attractive thing about my body?",
+    "Describe a scenario that would make you blush if I did it",
+    "What's something you want to try with me that you've never said?",
+    "If we were alone in a room for 1 hour... what happens?",
+    "What would you whisper in my ear at a party?",
+    "Describe the perfect morning waking up next to me",
+    "What's the most daring thing you'd do to impress me?"
+];
+
+let lastTodType = '';
+function showTOD(type) {
+    lastTodType = type;
+    let pool;
+    if (type === 'truth') pool = todTruths;
+    else if (type === 'dare') pool = todDares;
+    else pool = todSpicyQ;
+    const text = pool[Math.floor(Math.random() * pool.length)];
+    document.getElementById('todText').textContent = text;
+    document.getElementById('todResult').classList.add('show');
+}
+document.getElementById('todTruth').addEventListener('click', () => showTOD('truth'));
+document.getElementById('todDare').addEventListener('click', () => showTOD('dare'));
+document.getElementById('todSpicy').addEventListener('click', () => showTOD('spicy'));
+document.getElementById('todAnother').addEventListener('click', () => showTOD(lastTodType || 'truth'));
+
+// --- JOURNAL TAB ---
+const journalPrompts = [
+    "What's one thing about us that you never want to change?",
+    "Write a memory of ours that still makes you smile",
+    "If our love was a colour, what would it be and why?",
+    "What's something small I do that means the world to you?",
+    "Describe our relationship in exactly 6 words",
+    "What's one thing you want us to do together this month?",
+    "Write a short love letter — just 3 sentences",
+    "What's a song lyric that perfectly describes us?",
+    "If we wrote a book about us, what would chapter 1 be?",
+    "What do you love most about the way I love you?",
+    "Write about a future date you want us to go on",
+    "What's a challenge we've overcome together that made us stronger?",
+    "If you could freeze one moment with me, which one?",
+    "What does 'home' feel like to you?",
+    "Describe the feeling of being in love with me"
+];
+let currentPromptIdx = Math.floor(Math.random() * journalPrompts.length);
+let journalEntries = JSON.parse(localStorage.getItem('chiaJournal') || '[]');
+
+function showJournalPrompt() {
+    document.getElementById('journalPrompt').textContent = '"' + journalPrompts[currentPromptIdx] + '"';
+}
+function renderJournalEntries() {
+    const container = document.getElementById('journalEntries');
+    const emptyMsg = document.getElementById('journalEmpty');
+    container.innerHTML = '';
+    if (journalEntries.length === 0) {
+        emptyMsg.style.display = 'block';
+        return;
+    }
+    emptyMsg.style.display = 'none';
+    journalEntries.slice().reverse().forEach((entry, i) => {
+        const div = document.createElement('div');
+        div.className = 'journal-entry';
+        div.innerHTML = '<p class="journal-entry-date">' + entry.date + '</p>' +
+            '<p class="journal-entry-prompt">' + entry.prompt + '</p>' +
+            '<p class="journal-entry-text">' + entry.text + '</p>' +
+            '<button class="journal-entry-delete" data-idx="' + (journalEntries.length - 1 - i) + '">✕</button>';
+        container.appendChild(div);
+    });
+    container.querySelectorAll('.journal-entry-delete').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.idx);
+            journalEntries.splice(idx, 1);
+            localStorage.setItem('chiaJournal', JSON.stringify(journalEntries));
+            renderJournalEntries();
+        });
+    });
+}
+document.getElementById('journalNewPrompt').addEventListener('click', () => {
+    currentPromptIdx = (currentPromptIdx + 1) % journalPrompts.length;
+    showJournalPrompt();
+});
+document.getElementById('journalSave').addEventListener('click', () => {
+    const text = document.getElementById('journalInput').value.trim();
+    if (!text) return;
+    journalEntries.push({
+        date: new Date().toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric' }),
+        prompt: journalPrompts[currentPromptIdx],
+        text: text
+    });
+    localStorage.setItem('chiaJournal', JSON.stringify(journalEntries));
+    document.getElementById('journalInput').value = '';
+    currentPromptIdx = Math.floor(Math.random() * journalPrompts.length);
+    showJournalPrompt();
+    renderJournalEntries();
+});
+showJournalPrompt();
+renderJournalEntries();
 
 // === MEMORY GAME ===
 const gameEmojis = ['💙', '🦋', '✨', '🌙', '💎', '🌸', '🌊', '💫'];
@@ -533,7 +841,7 @@ window.addEventListener('scroll', () => {
 
 // === CLICK HEARTS ===
 document.addEventListener('click', (e) => {
-    if (e.target.closest('button, .envelope, canvas, .music-player, input, .nav, .mood-btn, .game-card, .game-reset-btn')) return;
+    if (e.target.closest('button, .envelope, canvas, .music-player, input, textarea, .nav, .mood-btn, .mood-zone, .game-card, .game-reset-btn')) return;
     for (let i = 0; i < 3; i++) {
         setTimeout(() => createClickHeart(e.clientX, e.clientY), i * 80);
     }

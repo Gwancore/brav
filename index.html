@@ -158,22 +158,92 @@
     <section class="section" id="mood">
         <div class="section-header" data-animate>
             <span class="section-icon">&#x1f338;</span>
-            <h2 class="section-title">How Are You Feeling?</h2>
-            <p class="section-subtitle">Tell me, and I'll be here for you</p>
+            <h2 class="section-title">Come Talk to Me</h2>
+            <p class="section-subtitle">This is our space. Be honest. Be you.</p>
         </div>
-        <div class="mood-section" data-animate data-delay="1">
-            <div class="mood-grid">
-                <button class="mood-btn" data-mood="happy"><span class="mood-emoji">&#x1f60a;</span><span class="mood-label">Happy</span></button>
-                <button class="mood-btn" data-mood="loved"><span class="mood-emoji">&#x1f970;</span><span class="mood-label">Loved</span></button>
-                <button class="mood-btn" data-mood="sad"><span class="mood-emoji">&#x1f622;</span><span class="mood-label">Sad</span></button>
-                <button class="mood-btn" data-mood="tired"><span class="mood-emoji">&#x1f634;</span><span class="mood-label">Tired</span></button>
-                <button class="mood-btn" data-mood="anxious"><span class="mood-emoji">&#x1f630;</span><span class="mood-label">Anxious</span></button>
-                <button class="mood-btn" data-mood="excited"><span class="mood-emoji">&#x1f929;</span><span class="mood-label">Excited</span></button>
-                <button class="mood-btn" data-mood="angry"><span class="mood-emoji">&#x1f624;</span><span class="mood-label">Angry</span></button>
-                <button class="mood-btn" data-mood="grateful"><span class="mood-emoji">&#x1f64f;</span><span class="mood-label">Grateful</span></button>
+        <div class="mood-zone" data-animate data-delay="1">
+            <div class="mood-tabs">
+                <button class="mood-tab active" data-tab="checkin">&#x1f49c; Check In</button>
+                <button class="mood-tab" data-tab="dare">&#x1f525; Love Dare</button>
+                <button class="mood-tab" data-tab="truthdare">&#x1f3b2; Truth or Dare</button>
+                <button class="mood-tab" data-tab="journal">&#x1f4d6; Us Journal</button>
             </div>
-            <div class="mood-response">
-                <p class="mood-response-text" id="moodResponseText">Pick a mood and I'll be right here...</p>
+
+            <div class="mood-panel active" id="panel-checkin">
+                <p class="checkin-prompt">Hey Chia... how's your heart right now?</p>
+                <div class="mood-grid">
+                    <button class="mood-btn" data-mood="onfire"><span class="mood-emoji">&#x1f525;</span><span class="mood-label">On Fire</span></button>
+                    <button class="mood-btn" data-mood="happy"><span class="mood-emoji">&#x1f60a;</span><span class="mood-label">Happy</span></button>
+                    <button class="mood-btn" data-mood="loved"><span class="mood-emoji">&#x1f970;</span><span class="mood-label">Loved</span></button>
+                    <button class="mood-btn" data-mood="flirty"><span class="mood-emoji">&#x1f609;</span><span class="mood-label">Flirty</span></button>
+                    <button class="mood-btn" data-mood="sad"><span class="mood-emoji">&#x1f622;</span><span class="mood-label">Sad</span></button>
+                    <button class="mood-btn" data-mood="tired"><span class="mood-emoji">&#x1f634;</span><span class="mood-label">Tired</span></button>
+                    <button class="mood-btn" data-mood="anxious"><span class="mood-emoji">&#x1f630;</span><span class="mood-label">Anxious</span></button>
+                    <button class="mood-btn" data-mood="missing"><span class="mood-emoji">&#x1f97a;</span><span class="mood-label">Missing You</span></button>
+                    <button class="mood-btn" data-mood="excited"><span class="mood-emoji">&#x1f929;</span><span class="mood-label">Hyped</span></button>
+                    <button class="mood-btn" data-mood="grateful"><span class="mood-emoji">&#x1f64f;</span><span class="mood-label">Grateful</span></button>
+                </div>
+                <div class="mood-response" id="moodResponse">
+                    <div class="mood-typing" id="moodTyping">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <p class="mood-response-text" id="moodResponseText"></p>
+                    <div class="mood-action" id="moodAction"></div>
+                </div>
+                <div class="mood-streak">
+                    <span>&#x1f4ab; Check-in streak: <strong id="moodStreak">0</strong> days</span>
+                </div>
+            </div>
+
+            <div class="mood-panel" id="panel-dare">
+                <div class="dare-card" id="dareCard">
+                    <div class="dare-label">Today's Love Dare</div>
+                    <p class="dare-text" id="dareText"></p>
+                    <div class="dare-timer" id="dareTimer"></div>
+                    <div class="dare-actions">
+                        <button class="dare-btn dare-accept" id="dareAccept">&#x1f49c; I'll Do It</button>
+                        <button class="dare-btn dare-skip" id="dareSkip">&#x1f504; Different One</button>
+                    </div>
+                    <div class="dare-complete-area" id="dareCompleteArea">
+                        <button class="dare-btn dare-done" id="dareDone">&#x2728; Done!</button>
+                    </div>
+                </div>
+                <div class="dare-stats">
+                    <div class="dare-stat"><span class="dare-stat-val" id="daresCompleted">0</span><span class="dare-stat-lbl">Dares Done</span></div>
+                    <div class="dare-stat"><span class="dare-stat-val" id="dareStreak">0</span><span class="dare-stat-lbl">Day Streak</span></div>
+                    <div class="dare-stat"><span class="dare-stat-val" id="dareLevel">Spark</span><span class="dare-stat-lbl">Love Level</span></div>
+                </div>
+            </div>
+
+            <div class="mood-panel" id="panel-truthdare">
+                <div class="tod-card">
+                    <p class="tod-instruction">Pick your poison, Chia...</p>
+                    <div class="tod-buttons">
+                        <button class="tod-btn tod-truth" id="todTruth">&#x1f4ac; Truth</button>
+                        <button class="tod-btn tod-dare-btn" id="todDare">&#x1f525; Dare</button>
+                        <button class="tod-btn tod-spicy" id="todSpicy">&#x1f336;&#xfe0f; Spicy</button>
+                    </div>
+                    <div class="tod-result" id="todResult">
+                        <p class="tod-text" id="todText"></p>
+                        <button class="tod-another" id="todAnother">Another one &#x1f504;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mood-panel" id="panel-journal">
+                <div class="journal-area">
+                    <p class="journal-prompt" id="journalPrompt"></p>
+                    <textarea class="journal-input" id="journalInput" placeholder="Write from the heart..." rows="4"></textarea>
+                    <div class="journal-actions">
+                        <button class="journal-btn" id="journalSave">&#x1f499; Save Entry</button>
+                        <button class="journal-btn journal-prompt-btn" id="journalNewPrompt">&#x1f3b2; New Prompt</button>
+                    </div>
+                </div>
+                <div class="journal-history" id="journalHistory">
+                    <p class="journal-history-title">Our Story So Far</p>
+                    <div class="journal-entries" id="journalEntries"></div>
+                    <p class="journal-empty" id="journalEmpty">No entries yet... start writing our story &#x1f499;</p>
+                </div>
             </div>
         </div>
     </section>

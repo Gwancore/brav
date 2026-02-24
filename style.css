@@ -242,30 +242,206 @@ body {
 }
 .dream-count { text-align: center; color: var(--grey-500); font-size: 0.85rem; margin-top: 1rem; }
 
-/* === MOOD === */
-.mood-section { max-width: 600px; width: 100%; text-align: center; }
-.mood-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; margin-bottom: 2rem; }
+/* === MOOD ZONE === */
+.mood-zone { max-width: 650px; width: 100%; }
+.mood-tabs { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; flex-wrap: wrap; justify-content: center; }
+.mood-tab {
+    background: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.1);
+    border-radius: 12px 12px 0 0; padding: 0.7rem 1.2rem; cursor: pointer;
+    color: var(--grey-400); font-family: 'Poppins', sans-serif; font-size: 0.85rem;
+    transition: all 0.3s; border-bottom: 2px solid transparent;
+}
+.mood-tab:hover { color: var(--blue-300); background: rgba(59,130,246,0.08); }
+.mood-tab.active { color: var(--blue-300); background: rgba(59,130,246,0.1); border-bottom-color: var(--blue-500); }
+.mood-panel { display: none; animation: panelIn 0.4s ease; }
+.mood-panel.active { display: block; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Check-in */
+.checkin-prompt {
+    font-family: 'Dancing Script', cursive; font-size: 1.4rem;
+    color: var(--blue-300); text-align: center; margin-bottom: 1.5rem;
+}
+.mood-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; margin-bottom: 1.5rem; }
 .mood-btn {
-    background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15);
-    border-radius: 16px; padding: 1rem 1.2rem; cursor: pointer;
-    transition: all 0.3s; font-size: 0.9rem; color: var(--grey-300);
+    background: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.12);
+    border-radius: 14px; padding: 0.8rem 1rem; cursor: pointer;
+    transition: all 0.3s; color: var(--grey-300);
     font-family: 'Poppins', sans-serif; display: flex; flex-direction: column;
-    align-items: center; gap: 0.3rem; min-width: 80px;
+    align-items: center; gap: 0.3rem; min-width: 72px; font-size: 0.85rem;
 }
-.mood-btn:hover { transform: translateY(-4px); border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.1); }
-.mood-btn.selected { background: rgba(59,130,246,0.15); border-color: var(--blue-500); color: var(--blue-200); }
-.mood-emoji { font-size: 1.8rem; }
-.mood-label { font-size: 0.75rem; }
+.mood-btn:hover { transform: translateY(-4px) scale(1.05); border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.1); box-shadow: 0 8px 25px rgba(59,130,246,0.1); }
+.mood-btn.selected { background: rgba(59,130,246,0.18); border-color: var(--blue-500); color: var(--blue-200); box-shadow: 0 0 20px rgba(59,130,246,0.15); }
+.mood-emoji { font-size: 1.6rem; }
+.mood-label { font-size: 0.7rem; }
 .mood-response {
-    background: rgba(59,130,246,0.05); border-radius: 20px;
-    padding: 2rem; min-height: 80px; display: flex; align-items: center;
-    justify-content: center; border: 1px solid rgba(59,130,246,0.1);
+    background: rgba(59,130,246,0.04); border-radius: 20px;
+    padding: 1.5rem; min-height: 100px; 
+    border: 1px solid rgba(59,130,246,0.08); position: relative;
+    margin-bottom: 1rem;
 }
+.mood-typing { display: none; justify-content: center; gap: 5px; padding: 1rem 0; }
+.mood-typing.show { display: flex; }
+.mood-typing span {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--blue-400);
+    animation: typingDot 1.2s ease-in-out infinite;
+}
+.mood-typing span:nth-child(2) { animation-delay: 0.2s; }
+.mood-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDot { 0%,80%,100%{opacity:0.3;transform:scale(0.8)} 40%{opacity:1;transform:scale(1.2)} }
 .mood-response-text {
-    font-size: 1.05rem; color: var(--grey-300); line-height: 1.8;
-    opacity: 0; transform: translateY(10px); transition: all 0.5s;
+    font-size: 1rem; color: var(--grey-300); line-height: 1.8; text-align: center;
+    opacity: 0; transform: translateY(8px); transition: all 0.5s ease;
 }
 .mood-response-text.show { opacity: 1; transform: translateY(0); }
+.mood-action { text-align: center; margin-top: 1rem; }
+.mood-action-btn {
+    background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.15));
+    border: 1px solid rgba(139,92,246,0.3); border-radius: 12px;
+    padding: 0.6rem 1.5rem; color: var(--blue-200); cursor: pointer;
+    font-family: 'Poppins', sans-serif; font-size: 0.85rem;
+    transition: all 0.3s; display: none;
+}
+.mood-action-btn.show { display: inline-block; animation: panelIn 0.4s ease; }
+.mood-action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,92,246,0.2); }
+.mood-streak {
+    text-align: center; font-size: 0.8rem; color: var(--grey-500);
+    padding: 0.5rem; border-top: 1px solid rgba(59,130,246,0.06);
+}
+.mood-streak strong { color: var(--blue-400); }
+
+/* Love Dare */
+.dare-card {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.06));
+    border: 1px solid rgba(139,92,246,0.2); border-radius: 20px;
+    padding: 2rem; text-align: center; position: relative; overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+.dare-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(139,92,246,0.05), transparent, rgba(59,130,246,0.05), transparent);
+    animation: dareGlow 8s linear infinite;
+}
+@keyframes dareGlow { to { transform: rotate(360deg); } }
+.dare-label {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
+    color: rgba(139,92,246,0.7); margin-bottom: 1rem; position: relative;
+}
+.dare-text {
+    font-family: 'Playfair Display', serif; font-size: 1.3rem;
+    color: var(--blue-100); line-height: 1.7; margin-bottom: 1.5rem;
+    position: relative; min-height: 60px;
+}
+.dare-timer { font-size: 0.8rem; color: var(--grey-500); margin-bottom: 1rem; position: relative; }
+.dare-actions { display: flex; gap: 0.8rem; justify-content: center; position: relative; }
+.dare-btn {
+    border: none; border-radius: 12px; padding: 0.7rem 1.5rem;
+    cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 0.85rem;
+    transition: all 0.3s;
+}
+.dare-accept {
+    background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(59,130,246,0.3));
+    color: var(--blue-100); border: 1px solid rgba(139,92,246,0.4);
+}
+.dare-accept:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,92,246,0.3); }
+.dare-skip {
+    background: rgba(59,130,246,0.08); color: var(--grey-400);
+    border: 1px solid rgba(59,130,246,0.15);
+}
+.dare-skip:hover { color: var(--blue-300); }
+.dare-complete-area { display: none; position: relative; margin-top: 1rem; }
+.dare-complete-area.show { display: block; animation: panelIn 0.3s ease; }
+.dare-done {
+    background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(59,130,246,0.2));
+    color: #86efac; border: 1px solid rgba(34,197,94,0.3);
+    width: 100%;
+}
+.dare-done:hover { box-shadow: 0 6px 20px rgba(34,197,94,0.2); transform: translateY(-2px); }
+.dare-stats { display: flex; justify-content: center; gap: 2rem; }
+.dare-stat { text-align: center; }
+.dare-stat-val { font-size: 1.4rem; color: var(--blue-300); font-family: 'Playfair Display', serif; display: block; }
+.dare-stat-lbl { font-size: 0.7rem; color: var(--grey-500); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Truth or Dare */
+.tod-card { text-align: center; }
+.tod-instruction {
+    font-family: 'Dancing Script', cursive; font-size: 1.3rem;
+    color: var(--blue-300); margin-bottom: 1.5rem;
+}
+.tod-buttons { display: flex; gap: 0.8rem; justify-content: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tod-btn {
+    border: none; border-radius: 14px; padding: 1rem 1.8rem; cursor: pointer;
+    font-family: 'Poppins', sans-serif; font-size: 0.95rem; transition: all 0.3s;
+    font-weight: 500;
+}
+.tod-truth { background: rgba(59,130,246,0.12); color: var(--blue-200); border: 1px solid rgba(59,130,246,0.25); }
+.tod-truth:hover { background: rgba(59,130,246,0.2); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(59,130,246,0.15); }
+.tod-dare-btn { background: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.25); }
+.tod-dare-btn:hover { background: rgba(239,68,68,0.18); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(239,68,68,0.15); }
+.tod-spicy { background: rgba(249,115,22,0.1); color: #fdba74; border: 1px solid rgba(249,115,22,0.25); }
+.tod-spicy:hover { background: rgba(249,115,22,0.18); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(249,115,22,0.15); }
+.tod-result { display: none; }
+.tod-result.show { display: block; animation: panelIn 0.5s ease; }
+.tod-text {
+    font-size: 1.15rem; color: var(--grey-200); line-height: 1.8;
+    padding: 1.5rem; background: rgba(59,130,246,0.04);
+    border-radius: 16px; border: 1px solid rgba(59,130,246,0.08);
+    margin-bottom: 1rem; min-height: 80px;
+}
+.tod-another {
+    background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.15);
+    border-radius: 10px; padding: 0.5rem 1.2rem; color: var(--grey-400);
+    cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 0.8rem;
+    transition: all 0.3s;
+}
+.tod-another:hover { color: var(--blue-300); }
+
+/* Journal */
+.journal-area { margin-bottom: 1.5rem; }
+.journal-prompt {
+    font-family: 'Playfair Display', serif; font-size: 1.15rem;
+    color: var(--blue-200); text-align: center; margin-bottom: 1rem;
+    line-height: 1.6; font-style: italic;
+}
+.journal-input {
+    width: 100%; background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.12);
+    border-radius: 16px; padding: 1.2rem; color: var(--blue-100);
+    font-family: 'Poppins', sans-serif; font-size: 0.95rem; outline: none;
+    transition: border-color 0.3s; resize: vertical; min-height: 100px;
+    line-height: 1.8;
+}
+.journal-input:focus { border-color: rgba(139,92,246,0.4); }
+.journal-input::placeholder { color: var(--grey-600); }
+.journal-actions { display: flex; gap: 0.8rem; margin-top: 1rem; }
+.journal-btn {
+    flex: 1; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 12px; padding: 0.7rem; color: var(--blue-300);
+    cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 0.85rem;
+    transition: all 0.3s;
+}
+.journal-btn:hover { background: rgba(59,130,246,0.18); transform: translateY(-2px); }
+.journal-prompt-btn { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.15); color: rgba(167,139,250,0.8); }
+.journal-history-title {
+    font-family: 'Dancing Script', cursive; font-size: 1.1rem;
+    color: var(--blue-400); margin-bottom: 1rem; text-align: center;
+}
+.journal-entries { display: flex; flex-direction: column; gap: 0.8rem; max-height: 300px; overflow-y: auto; padding-right: 0.5rem; }
+.journal-entries::-webkit-scrollbar { width: 4px; }
+.journal-entries::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.2); border-radius: 4px; }
+.journal-entry {
+    background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.08);
+    border-radius: 12px; padding: 1rem; position: relative;
+}
+.journal-entry-date { font-size: 0.7rem; color: var(--grey-500); margin-bottom: 0.3rem; }
+.journal-entry-prompt { font-size: 0.75rem; color: rgba(139,92,246,0.6); font-style: italic; margin-bottom: 0.4rem; }
+.journal-entry-text { font-size: 0.9rem; color: var(--grey-300); line-height: 1.6; }
+.journal-entry-delete {
+    position: absolute; top: 0.5rem; right: 0.7rem; background: none; border: none;
+    color: var(--grey-600); cursor: pointer; font-size: 0.8rem; opacity: 0; transition: opacity 0.2s;
+}
+.journal-entry:hover .journal-entry-delete { opacity: 1; }
+.journal-entry-delete:hover { color: #f87171; }
+.journal-empty { text-align: center; color: var(--grey-600); font-size: 0.85rem; font-style: italic; }
 
 /* === PROMISES TIMELINE === */
 .timeline { max-width: 600px; width: 100%; position: relative; padding-left: 2rem; }
@@ -399,6 +575,10 @@ body {
     .daily-note-card { padding: 2rem 1.5rem; }
     .dream-input-area { flex-direction: column; }
     .mood-btn { min-width: 65px; padding: 0.8rem; }
+    .mood-tab { font-size: 0.75rem; padding: 0.5rem 0.8rem; }
+    .tod-btn { padding: 0.8rem 1.2rem; font-size: 0.85rem; }
+    .dare-text { font-size: 1.1rem; }
+    .journal-actions { flex-direction: column; }
     .game-board { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
     .love-btn { width: 100px; height: 100px; font-size: 2.5rem; }
     .love-stats { gap: 1.5rem; }

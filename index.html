@@ -3,264 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💙 For You, Chia</title>
+    <title>For You, Chia</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&amp;family=Poppins:wght@300;400;500;600&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Cursor glow -->
     <div class="cursor-glow" id="cursorGlow"></div>
+    <canvas class="stars-canvas" id="starsCanvas"></canvas>
+    <div class="floating-hearts-container" id="floatingHearts"></div>
 
-    <!-- Floating hearts container -->
-    <div class="floating-hearts" id="floatingHearts"></div>
+    <nav class="nav" id="mainNav">
+        <span class="room-label" id="roomLabel">Home</span>
+        <a href="#landing" class="nav-link active" data-room="Home">&#x1f3e0;</a>
+        <a href="#dailyNote" class="nav-link" data-room="Love Notes">&#x1f48c;</a>
+        <a href="#reasons" class="nav-link" data-room="Reasons">&#x1f499;</a>
+        <a href="#letter" class="nav-link" data-room="Letter">&#x2709;&#xfe0f;</a>
+        <a href="#constellation" class="nav-link" data-room="Stars">&#x2b50;</a>
+        <a href="#dreams" class="nav-link" data-room="Dreams">&#x2601;&#xfe0f;</a>
+        <a href="#mood" class="nav-link" data-room="Mood">&#x1f338;</a>
+        <a href="#promises" class="nav-link" data-room="Promises">&#x1f91e;</a>
+        <a href="#game" class="nav-link" data-room="Play">&#x1f3ae;</a>
+        <a href="#love" class="nav-link" data-room="Love">&#x1f497;</a>
+    </nav>
 
-    <!-- Stars / particles -->
-    <canvas id="starsCanvas"></canvas>
+    <div class="secrets-counter" id="secretsCounter">&#x1f52e; Secrets: <span id="secretsFound">0</span>/3</div>
+    <div class="secret-toast" id="secretToast">&#x2728; <span id="secretToastText"></span></div>
 
-    <!-- ====== LANDING SECTION ====== -->
     <section class="section landing" id="landing">
         <div class="landing-content">
-            <div class="heart-beat">💙</div>
-            <h1 class="title-reveal">This is for you, Chia</h1>
-            <p class="subtitle-reveal">Scroll down, Bravine… my love</p>
-            <div class="scroll-indicator">
-                <div class="mouse">
-                    <div class="wheel"></div>
-                </div>
-                <span>Scroll</span>
+            <p class="greeting-text" id="greeting">Welcome home</p>
+            <p class="current-time" id="currentTime"></p>
+            <h1 class="main-title title-reveal" data-animate>For You, Bravine</h1>
+            <p class="main-subtitle" data-animate data-delay="1">My Chia, My Everything</p>
+            <p class="landing-tagline" data-animate data-delay="2">This is your place. A home, a friend, a garden, a museum of us. Come here whenever you need a smile, a hug, or a reminder of how loved you are.</p>
+            <div class="scroll-hint" data-animate data-delay="3">
+                <span>Explore your world</span>
+                <span class="scroll-arrow">&#x2193;</span>
             </div>
         </div>
     </section>
 
-    <!-- ====== REASONS SECTION ====== -->
-    <section class="section reasons" id="reasons">
-        <h2 class="section-title" data-animate>Why You're Special, Chia</h2>
+    <section class="section" id="dailyNote">
+        <div class="section-header" data-animate>
+            <span class="section-icon">&#x1f48c;</span>
+            <h2 class="section-title">Today's Love Note</h2>
+            <p class="section-subtitle">A new message every day, just for you</p>
+        </div>
+        <div class="daily-note-card" data-animate data-delay="1">
+            <p class="daily-date" id="dailyDate"></p>
+            <h3 class="daily-title" id="dailyTitle"></h3>
+            <p class="daily-message" id="dailyMessage"></p>
+            <span class="note-refresh">Changes daily &#x1f319;</span>
+        </div>
+    </section>
+
+    <section class="section" id="reasons">
+        <div class="section-header" data-animate>
+            <span class="section-icon">&#x1f499;</span>
+            <h2 class="section-title">Why I Love You</h2>
+            <p class="section-subtitle">A few of a million reasons</p>
+        </div>
         <div class="reasons-grid">
             <div class="reason-card" data-animate data-delay="0">
-                <div class="reason-icon">✨</div>
-                <h3>Your Smile</h3>
-                <p>It lights up every room and makes the darkest days feel bright.</p>
+                <span class="reason-emoji">&#x1f31f;</span>
+                <h3 class="reason-title">Your Strength</h3>
+                <p class="reason-text">You face every challenge with such grace, Chia. You're the strongest person I know, and you inspire me every single day.</p>
             </div>
             <div class="reason-card" data-animate data-delay="1">
-                <div class="reason-icon">💫</div>
-                <h3>Your Kindness</h3>
-                <p>The way you care about everyone around you is truly beautiful.</p>
+                <span class="reason-emoji">&#x1f60a;</span>
+                <h3 class="reason-title">Your Smile</h3>
+                <p class="reason-text">That smile could light up the darkest room. When you smile, Bravine, the whole world stops and stares for a while.</p>
             </div>
             <div class="reason-card" data-animate data-delay="2">
-                <div class="reason-icon">🌙</div>
-                <h3>Your Strength</h3>
-                <p>You inspire me every single day with your courage and grace.</p>
+                <span class="reason-emoji">&#x1f49c;</span>
+                <h3 class="reason-title">Your Heart</h3>
+                <p class="reason-text">The way you care about people, the way you love without limits. Your heart is the most beautiful thing about you.</p>
             </div>
             <div class="reason-card" data-animate data-delay="3">
-                <div class="reason-icon">🦋</div>
-                <h3>Your Laugh</h3>
-                <p>The most beautiful sound in the entire universe. I mean it.</p>
+                <span class="reason-emoji">&#x1f602;</span>
+                <h3 class="reason-title">Your Laugh</h3>
+                <p class="reason-text">I'd do anything to hear you laugh. It's my favourite sound in the entire universe, Chia.</p>
             </div>
             <div class="reason-card" data-animate data-delay="4">
-                <div class="reason-icon">🌊</div>
-                <h3>Your Eyes</h3>
-                <p>I could get lost in them forever and never want to be found.</p>
+                <span class="reason-emoji">&#x1f9e0;</span>
+                <h3 class="reason-title">Your Mind</h3>
+                <p class="reason-text">The way you think, your ideas, your dreams. You're brilliant, Bravine, and I love watching your mind work.</p>
             </div>
             <div class="reason-card" data-animate data-delay="5">
-                <div class="reason-icon">💎</div>
-                <h3>Your Heart</h3>
-                <p>So pure, so warm — it's the reason I fell in love with you.</p>
+                <span class="reason-emoji">&#x2728;</span>
+                <h3 class="reason-title">Your Soul</h3>
+                <p class="reason-text">There's something about your energy that feels like home. Your soul speaks to mine in ways words never could.</p>
             </div>
         </div>
     </section>
 
-    <!-- ====== INTERACTIVE LOVE LETTER ====== -->
-    <section class="section love-letter" id="loveLetter">
-        <div class="envelope-wrapper" data-animate>
+    <section class="section" id="letter">
+        <div class="section-header" data-animate>
+            <span class="section-icon">&#x2709;&#xfe0f;</span>
+            <h2 class="section-title">A Letter For You</h2>
+            <p class="section-subtitle">Click to open</p>
+        </div>
+        <div class="envelope-section" data-animate data-delay="1">
             <div class="envelope" id="envelope">
-                <div class="envelope-flap"></div>
-                <div class="envelope-body">
-                    <p class="envelope-hint">Click to open 💌</p>
+                <div class="envelope-front">
+                    <span class="envelope-seal">&#x1f48b;</span>
+                    <p class="envelope-label">To: My Dearest Chia</p>
+                    <p class="envelope-hint">tap to open</p>
                 </div>
-                <div class="letter" id="letter">
-                    <div class="letter-content">
-                        <p class="letter-greeting">My Dearest Bravine,</p>
-                        <p>Every moment with you feels like a dream I never want to wake up from. You are my sunshine, my moonlight, and every star in between, Chia.</p>
-                        <p>Thank you for being you — perfectly, beautifully, wonderfully you. The world is so much better with you in it.</p>
-                        <p class="letter-closing">Forever & Always yours,<br><span class="letter-signature">— With all my love, for my Chia 💙</span></p>
+                <div class="letter-content">
+                    <div class="letter-text">
+                        <p>My dearest Bravine,</p>
+                        <p>There are things I feel for you that I'll never fully be able to put into words. But I'll spend my whole life trying.</p>
+                        <p>You came into my world and painted it blue &#x2014; the colour of calm, of depth, of something eternal. Before you, I didn't know love could feel this steady, this safe, this infinite.</p>
+                        <p>I love the way you laugh when you think no one's watching. I love how you care so deeply it scares you sometimes. I love that you're brave enough to be soft in a world that tells you not to be.</p>
+                        <p>You are my favourite person, Chia. My best friend. My peace. My home.</p>
+                        <p>I built this place for you &#x2014; every pixel, every word, every hidden secret. Because you deserve a universe. And this is my first attempt at giving you one.</p>
+                        <p class="letter-signature">Forever yours &#x1f499;</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ====== INTERACTIVE CONSTELLATION ====== -->
-    <section class="section constellation-section" id="constellation">
-        <h2 class="section-title" data-animate>Our Constellation</h2>
-        <p class="constellation-subtitle" data-animate>Click anywhere to create our stars together ✨</p>
-        <canvas id="constellationCanvas"></canvas>
+    <section class="section" id="constellation">
+        <div class="section-header" data-animate>
+            <span class="section-icon">&#x2b50;</span>
+            <h2 class="section-title">Our Constellation</h2>
+            <p class="section-subtitle">Click to place stars and watch them connect</p>
+        </div>
+        <div class="constellation-wrapper" data-animate data-delay="1">
+            <canvas class="constellation-canvas" id="constellationCanvas"></canvas>
+            <p class="constellation-hint">Click anywhere on the canvas to add stars &#x2728;</p>
+        </div>
     </section>
 
-    <!-- ====== PROMISE TIMELINE ====== -->
-    <section class="section promises" id="promises">
-        <h2 class="section-title" data-animate>My Promises to You, Bravine</h2>
-        <div class="timeline">
-            <div class="timeline-item" data-animate data-delay="0">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>Always</h3>
-                    <p>I will always choose you, in every lifetime, in every universe.</p>
-                </div>
+    <section class="section" id="dreams">
+        <div class="section-header" data-animate>
+            <span class="section-icon">&#x2601;&#xfe0f;</span>
+            <h2 class="section-title">Dream Board</h2>
+            <p class="section-subtitle">Write your dreams, wishes, and thoughts</p>
+        </div>
+        <div class="dream-board" data-animate data-delay="1">
+            <div class="dream-input-area">
+                <input type="text" class="dream-input" id="dreamInput" placeholder="Write a dream, a wish, a thought..." maxlength="100">
+                <button class="dream-btn" id="dreamBtn">&#x2728; Add</button>
             </div>
-            <div class="timeline-item" data-animate data-delay="1">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>Forever</h3>
-                    <p>I will be your safe place, your comfort, your home.</p>
-                </div>
+            <div class="dreams-display" id="dreamsCanvas"></div>
+            <p class="dream-count"><span id="dreamCount">0</span> dreams floating</p>
+        </div>
+    </section>
+
+    <section class="section" id="mood">
+        <div class="section-header" data-animate>
+            <span class="section-icon">&#x1f338;</span>
+            <h2 class="section-title">How Are You Feeling?</h2>
+            <p class="section-subtitle">Tell me, and I'll be here for you</p>
+        </div>
+        <div class="mood-section" data-animate data-delay="1">
+            <div class="mood-grid">
+                <button class="mood-btn" data-mood="happy"><span class="mood-emoji">&#x1f60a;</span><span class="mood-label">Happy</span></button>
+                <button class="mood-btn" data-mood="loved"><span class="mood-emoji">&#x1f970;</span><span class="mood-label">Loved</span></button>
+                <button class="mood-btn" data-mood="sad"><span class="mood-emoji">&#x1f622;</span><span class="mood-label">Sad</span></button>
+                <button class="mood-btn" data-mood="tired"><span class="mood-emoji">&#x1f634;</span><span class="mood-label">Tired</span></button>
+                <button class="mood-btn" data-mood="anxious"><span class="mood-emoji">&#x1f630;</span><span class="mood-label">Anxious</span></button>
+                <button class="mood-btn" data-mood="excited"><span class="mood-emoji">&#x1f929;</span><span class="mood-label">Excited</span></button>
+                <button class="mood-btn" data-mood="angry"><span class="mood-emoji">&#x1f624;</span><span class="mood-label">Angry</span></button>
+                <button class="mood-btn" data-mood="grateful"><span class="mood-emoji">&#x1f64f;</span><span class="mood-label">Grateful</span></button>
             </div>
-            <div class="timeline-item" data-animate data-delay="2">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>Every Day</h3>
-                    <p>I will remind you how amazing, beautiful, and loved you are.</p>
-                </div>
-            </div>
-            <div class="timeline-item" data-animate data-delay="3">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>No Matter What</h3>
-                    <p>I will stand by your side through every storm and every sunrise.</p>
-                </div>
+            <div class="mood-response">
+                <p class="mood-response-text" id="moodResponseText">Pick a mood and I'll be right here...</p>
             </div>
         </div>
     </section>
 
-    <!-- ====== INTERACTIVE HEART GARDEN ====== -->
-    <section class="section garden" id="garden">
-        <h2 class="section-title" data-animate>Our Garden of Love</h2>
-        <p class="garden-subtitle" data-animate>Hover over the flowers and watch them bloom 🌸</p>
-        <div class="garden-container">
-            <div class="flower" data-animate data-delay="0" style="--hue: 210">
-                <div class="stem"></div>
-                <div class="petals">
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                </div>
-                <div class="flower-center"></div>
+    <section class="section" id="promises">
+        <div class="section-header" data-animate>
+            <span class="section-icon">&#x1f91e;</span>
+            <h2 class="section-title">My Promises to You</h2>
+            <p class="section-subtitle">Written in stars, sealed in my heart</p>
+        </div>
+        <div class="timeline" data-animate data-delay="1">
+            <div class="timeline-item" data-animate data-delay="0"><span class="timeline-emoji">&#x1f319;</span><p class="timeline-text">I promise to always be your safe place, Chia. No matter what.</p></div>
+            <div class="timeline-item" data-animate data-delay="1"><span class="timeline-emoji">&#x2600;&#xfe0f;</span><p class="timeline-text">I promise to make you laugh every day, even on the hard ones.</p></div>
+            <div class="timeline-item" data-animate data-delay="2"><span class="timeline-emoji">&#x1f499;</span><p class="timeline-text">I promise to love you louder on the days you feel unlovable.</p></div>
+            <div class="timeline-item" data-animate data-delay="3"><span class="timeline-emoji">&#x1f30d;</span><p class="timeline-text">I promise to explore this world with you, hand in hand, always.</p></div>
+            <div class="timeline-item" data-animate data-delay="4"><span class="timeline-emoji">&#x267e;&#xfe0f;</span><p class="timeline-text">I promise to choose you. Every morning. Every night. Every lifetime.</p></div>
+        </div>
+    </section>
+
+    <section class="section" id="game">
+        <div class="section-header" data-animate>
+            <span class="section-icon">&#x1f3ae;</span>
+            <h2 class="section-title">Memory Match</h2>
+            <p class="section-subtitle">A little game for when you're bored</p>
+        </div>
+        <div class="game-container" data-animate data-delay="1">
+            <div class="game-stats">
+                <div class="game-stat"><div class="game-stat-label">Moves</div><div class="game-stat-value" id="moveCount">0</div></div>
+                <div class="game-stat"><div class="game-stat-label">Best</div><div class="game-stat-value" id="bestScore">&mdash;</div></div>
             </div>
-            <div class="flower" data-animate data-delay="1" style="--hue: 230">
-                <div class="stem"></div>
-                <div class="petals">
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                </div>
-                <div class="flower-center"></div>
-            </div>
-            <div class="flower" data-animate data-delay="2" style="--hue: 195">
-                <div class="stem"></div>
-                <div class="petals">
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                </div>
-                <div class="flower-center"></div>
-            </div>
-            <div class="flower" data-animate data-delay="3" style="--hue: 250">
-                <div class="stem"></div>
-                <div class="petals">
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                </div>
-                <div class="flower-center"></div>
-            </div>
-            <div class="flower" data-animate data-delay="4" style="--hue: 220">
-                <div class="stem"></div>
-                <div class="petals">
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                    <div class="petal"></div>
-                </div>
-                <div class="flower-center"></div>
+            <div class="game-board" id="gameBoard"></div>
+            <button class="game-reset-btn" id="resetGame">&#x1f504; New Game</button>
+            <div class="game-win" id="gameWin"><p class="game-win-text" id="gameWinText"></p></div>
+        </div>
+    </section>
+
+    <section class="section" id="love">
+        <div class="section-header" data-animate>
+            <span class="section-icon">&#x1f497;</span>
+            <h2 class="section-title">Send Me Love</h2>
+            <p class="section-subtitle">Every tap sends a heart into the universe</p>
+        </div>
+        <div class="love-button-area" data-animate data-delay="1">
+            <button class="love-btn" id="loveBtn">&#x1f499;</button>
+            <div class="love-stats">
+                <div class="love-stat"><span class="love-stat-value" id="heartsSent">0</span><span class="love-stat-label">Hearts Sent</span></div>
+                <div class="love-stat"><span class="love-stat-value" id="visitsCount">0</span><span class="love-stat-label">Visits</span></div>
+                <div class="love-stat"><span class="love-stat-value" id="dreamsWritten">0</span><span class="love-stat-label">Dreams</span></div>
             </div>
         </div>
     </section>
 
-    <!-- ====== INFINITY COUNTER ====== -->
-    <section class="section infinity" id="infinity">
-        <div class="infinity-content" data-animate>
-            <h2>My love for you is</h2>
-            <div class="infinity-counter" id="infinityCounter">∞</div>
-            <p>and counting...</p>
-            <button class="love-btn" id="loveBtn">
-                <span class="btn-text">Send me a 💙</span>
-                <span class="btn-hearts" id="btnHearts"></span>
-            </button>
-            <div class="love-count">
-                You've sent <span id="heartCount">0</span> hearts 💙
-            </div>
+    <section class="section" id="final">
+        <div class="final-section" data-animate>
+            <span class="final-emoji">&#x267e;&#xfe0f;</span>
+            <h2 class="final-title">Forever &amp; Always</h2>
+            <p class="final-text">This website is alive, Chia. It grows with us. New notes appear daily. Your dreams are saved. Your visits are counted. Hidden secrets wait to be found. Come back whenever you miss me, whenever you need a smile, or whenever you just want to remember how deeply, madly, completely you are loved.</p>
+            <p class="final-signature">With all my love, always &#x1f499;</p>
         </div>
     </section>
 
-    <!-- ====== FINAL MESSAGE ====== -->
-    <section class="section final" id="final">
-        <div class="final-content" data-animate>
-            <div class="final-heart">
-                <svg viewBox="0 0 100 100" class="heart-svg">
-                    <path d="M50 88 C25 65, 0 50, 0 30 C0 12, 12 0, 28 0 C38 0, 47 5, 50 15 C53 5, 62 0, 72 0 C88 0, 100 12, 100 30 C100 50, 75 65, 50 88Z" 
-                          fill="none" stroke="url(#heartGradient)" stroke-width="2"
-                          class="heart-path"/>
-                    <defs>
-                        <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#60a5fa"/>
-                            <stop offset="50%" style="stop-color:#3b82f6"/>
-                            <stop offset="100%" style="stop-color:#1d4ed8"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
-            <h2 class="final-title">Bravine, you are my everything</h2>
-            <p class="final-text">Today, tomorrow, and for all the days after that.</p>
-            <p class="final-text">I love you more than words could ever say, Chia. 💙</p>
-        </div>
-    </section>
+    <footer class="footer">
+        <p class="footer-text">Built with <span class="footer-heart">&#x1f499;</span> for Bravine</p>
+    </footer>
 
-    <!-- ====== MINIMAL MUSIC PLAYER ====== -->
-    <div class="music-player" id="musicPlayer">
+    <div class="music-player">
         <div class="music-player-header" id="musicPlayerToggle">
-            <span class="mp-icon">🎶</span>
-            <span class="mp-title">Dancehall Vibes</span>
-            <span class="mp-arrow" id="mpArrow">▼</span>
+            <span class="music-player-title">&#x1f3b5; Our Playlist</span>
+            <span class="mp-arrow" id="mpArrow">&#x25b2;</span>
         </div>
         <div class="music-player-body" id="musicPlayerBody">
-            <div class="mp-tracks">
-                <!-- TODO: Add local music files here later
-                <iframe width="100%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/vybz-kartel-official/fever&color=%233b82f6&inverse=true&auto_play=false&show_user=false"></iframe>
-                <iframe width="100%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/vybz-kartel-official/it-bend-like-banana&color=%233b82f6&inverse=true&auto_play=false&show_user=false"></iframe>
-                <iframe width="100%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/vybz-kartel-official/only-gets-better-forever&color=%233b82f6&inverse=true&auto_play=false&show_user=false"></iframe>
-                <iframe width="100%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/vybz-kartel-official/born-ready&color=%233b82f6&inverse=true&auto_play=false&show_user=false"></iframe>
-                <iframe width="100%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/seanpaulofficial/no-lie-ft-dua-lipa&color=%233b82f6&inverse=true&auto_play=false&show_user=false"></iframe>
-                <iframe width="100%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/poaboron/popcaan-forever&color=%233b82f6&inverse=true&auto_play=false&show_user=false"></iframe>
-                <iframe width="100%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/shaggy/it-wasnt-me&color=%233b82f6&inverse=true&auto_play=false&show_user=false"></iframe>
-                <iframe width="100%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/beenie-man-official/king-of-the-dancehall&color=%233b82f6&inverse=true&auto_play=false&show_user=false"></iframe>
-                -->
-                <p style="color: var(--blue-400); font-size: 0.8rem; text-align: center; padding: 12px; opacity: 0.6;">🎵 Music coming soon...</p>
-            </div>
+            <div class="music-coming-soon">&#x1f3b5; Music coming soon...</div>
         </div>
     </div>
 
